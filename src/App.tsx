@@ -200,9 +200,9 @@ export const App: React.FC = () => {
                   fontWeight: isActive ? 700 : 500,
                   letterSpacing: '-0.01em',
                   transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-                  backgroundColor: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
+                  background: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
                   color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)',
-                  boxShadow: isActive ? '0 4px 14px rgba(0,0,0,0.15)' : 'none',
+                  boxShadow: isActive ? '0 4px 18px rgba(139, 92, 246, 0.4)' : 'none',
                   border: 'none',
                 }}
               >

@@ -85,40 +85,54 @@
   --shadow-xl: 0 24px 40px rgba(19, 53, 47, 0.09);
 }
 
-/* Dark Mode Overrides */
+/* Dark Mode Overrides (Lumaora Midnight Violet & Neon Palette) */
 :root.dark {
-  --bg-app: #080b11;
-  --bg-panel: #0d1117;
-  --bg-hover: #161b22;
-  --bg-active: #21262d;
-  --border-color: rgba(255, 255, 255, 0.08);
+  --bg-app: #0d0817;               /* Deep midnight dark violet canvas */
+  --bg-panel: #161026;             /* Deep plum obsidian container panel */
+  --bg-hover: #221838;             /* Rich violet hover overlay */
+  --bg-active: #2f204d;            /* Elevated purple active background */
+  --border-color: rgba(168, 130, 255, 0.12); /* Subtle glowing violet border */
   --border-subtle: rgba(255, 255, 255, 0.05);
-  
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-tertiary: #6b7280;
-  
-  --color-brand: #10b981;
-  --color-brand-hover: #34d399;
-  --color-brand-glow: rgba(16, 185, 129, 0.2);
-  
+
+  /* Sidebar Tokens (Lumaora Deep Plum Sidebar) */
+  --bg-sidebar: #130d21;
+  --text-sidebar-title: #ffffff;
+  --text-sidebar-sub: #a89bbd;
+  --text-sidebar-item: #b4a8c9;
+  --text-sidebar-hover: #ffffff;
+  --bg-sidebar-active: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%); /* Neon Purple-Magenta Gradient Pill */
+  --text-sidebar-active: #ffffff;
+
+  /* Typography Colors */
+  --text-primary: #f6f2ff;
+  --text-secondary: #b3a6c9;
+  --text-tertiary: #81729c;
+
+  /* Brand & Glowing Accent Colors */
+  --color-brand: #8b5cf6;
+  --color-brand-hover: #a855f7;
+  --color-brand-glow: rgba(139, 92, 246, 0.25);
+  --color-brand-blush: #2f204d;
+  --color-brand-coral: #ec4899;
+
+  /* Status Colors */
   --color-success: #34d399;
   --color-success-bg: rgba(16, 185, 129, 0.15);
   --color-success-border: rgba(16, 185, 129, 0.3);
 
-  --color-warning: #fbbf24;
-  --color-warning-bg: rgba(245, 158, 11, 0.15);
-  --color-warning-border: rgba(245, 158, 11, 0.3);
+  --color-warning: #fb923c;
+  --color-warning-bg: rgba(249, 115, 22, 0.15);
+  --color-warning-border: rgba(249, 115, 22, 0.3);
 
-  --color-danger: #f87171;
-  --color-danger-bg: rgba(239, 68, 68, 0.15);
-  --color-danger-border: rgba(239, 68, 68, 0.3);
-  
-  --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  --color-danger: #f472b6;
+  --color-danger-bg: rgba(236, 72, 153, 0.15);
+  --color-danger-border: rgba(236, 72, 153, 0.3);
+
+  --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 24px 45px rgba(0, 0, 0, 0.65);
 }
 
 body {
