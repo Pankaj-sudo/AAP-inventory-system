@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* --- Reset & Base Styles --- */
 *, *::before, *::after {
@@ -8,18 +8,18 @@
 }
 
 :root {
-  /* Enterprise SaaS Typography Tokens (Inter Primary) */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Inter', 'Outfit', system-ui, sans-serif;
+  /* Velora Premium Luxury Design Language Tokens */
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', 'Plus Jakarta Sans', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
   
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
   
-  --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
   /* 8px Spacing System */
@@ -32,44 +32,57 @@
   --space-10: 40px;
   --space-12: 48px;
   
-  /* Color defaults - Light Mode (Page Depth #F8FAFC) */
-  --bg-app: #f8fafc;
+  /* Velora Color Palette (Warm Ivory Canvas + Deep Forest Sidebar + Coral Blush Accents) */
+  --bg-app: #f7f4ef;
   --bg-panel: #ffffff;
-  --bg-hover: #fcfcfd;
-  --bg-active: #f1f5f9;
-  --border-color: #e8edf3;
-  --border-subtle: rgba(15, 23, 42, 0.06);
+  --bg-hover: #f3ece4;
+  --bg-active: #eae0d4;
+  --border-color: #eee7dd;
+  --border-subtle: rgba(19, 53, 47, 0.06);
+
+  /* Sidebar Tokens (Deep Dark Forest Teal) */
+  --bg-sidebar: #13352f;
+  --text-sidebar-title: #ffffff;
+  --text-sidebar-sub: #9ebab3;
+  --text-sidebar-item: #b8ccc7;
+  --text-sidebar-hover: #ffffff;
+  --bg-sidebar-active: #f6ddd6; /* Soft Blush Pink Pill */
+  --text-sidebar-active: #13352f;
+
+  /* General Typography Colors */
+  --text-primary: #1c2826;
+  --text-secondary: #5a6864;
+  --text-tertiary: #8c9995;
   
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
+  /* Brand Accents */
+  --color-brand: #13352f;
+  --color-brand-hover: #0f2b26;
+  --color-brand-glow: rgba(19, 53, 47, 0.12);
+  --color-brand-blush: #f6ddd6;
+  --color-brand-coral: #ff4769;
   
-  --color-brand: #10b981;
-  --color-brand-hover: #059669;
-  --color-brand-glow: rgba(16, 185, 129, 0.12);
+  /* Soft Status Palette */
+  --color-success: #1b7a59;
+  --color-success-bg: #e8f5f0;
+  --color-success-border: #b8e2d2;
   
-  /* Pastel Softer Status Palette */
-  --color-success: #16a34a;
-  --color-success-bg: #ecfdf5;
-  --color-success-border: #a7f3d0;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef4e6;
+  --color-warning-border: #fcdcae;
   
-  --color-warning: #ea580c;
-  --color-warning-bg: #fff7ed;
-  --color-warning-border: #fed7aa;
-  
-  --color-danger: #dc2626;
-  --color-danger-bg: #fef2f2;
-  --color-danger-border: #fca5a5;
+  --color-danger: #e11d48;
+  --color-danger-bg: #ffeef2;
+  --color-danger-border: #fcc2d0;
 
   --color-info: #2563eb;
   --color-info-bg: #eff6ff;
   --color-info-border: #bfdbfe;
   
-  --shadow-card: 0 4px 18px rgba(15, 23, 42, 0.05);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 20px 30px rgba(15, 23, 42, 0.10);
+  --shadow-card: 0 10px 30px rgba(19, 53, 47, 0.04);
+  --shadow-sm: 0 2px 8px rgba(19, 53, 47, 0.03);
+  --shadow-md: 0 6px 18px rgba(19, 53, 47, 0.05);
+  --shadow-lg: 0 12px 32px rgba(19, 53, 47, 0.07);
+  --shadow-xl: 0 24px 40px rgba(19, 53, 47, 0.09);
 }
 
 /* Dark Mode Overrides */

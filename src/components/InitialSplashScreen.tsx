@@ -62,9 +62,9 @@ export const InitialSplashScreen: React.FC<InitialSplashScreenProps> = ({ onComp
         <div
           style={{
             position: 'absolute',
-            inset: '-12px',
-            borderRadius: '28px',
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.45), rgba(5, 150, 105, 0.15))',
+            inset: '-14px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, rgba(246, 221, 214, 0.6), rgba(19, 53, 47, 0.15))',
             filter: 'blur(20px)',
             animation: 'pulseAura 2s infinite ease-in-out'
           }}
@@ -72,22 +72,21 @@ export const InitialSplashScreen: React.FC<InitialSplashScreenProps> = ({ onComp
         <div
           style={{
             position: 'relative',
-            width: '68px',
-            height: '68px',
-            borderRadius: '18px',
-            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            width: '72px',
+            height: '72px',
+            borderRadius: '50%',
+            background: '#f6ddd6',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#ffffff',
+            color: '#13352f',
             fontWeight: 800,
-            fontSize: '2.15rem',
-            fontFamily: 'var(--font-display)',
-            boxShadow: '0 12px 36px rgba(16, 185, 129, 0.45)',
-            border: '1px solid rgba(255,255,255,0.25)'
+            fontSize: '2.25rem',
+            boxShadow: '0 12px 36px rgba(19, 53, 47, 0.2)',
+            border: '2px solid rgba(255,255,255,0.6)'
           }}
         >
-          A
+          🌸
         </div>
       </div>
 
@@ -96,11 +95,12 @@ export const InitialSplashScreen: React.FC<InitialSplashScreenProps> = ({ onComp
         <h1
           className="heading-display"
           style={{
-            fontSize: '2.35rem',
-            fontWeight: 800,
+            fontSize: '2.5rem',
+            fontWeight: 700,
             margin: 0,
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.03em',
+            color: '#13352f',
+            letterSpacing: '-0.02em',
+            fontFamily: 'var(--font-display)',
             animation: 'fadeInUpTitle 800ms cubic-bezier(0.16, 1, 0.3, 1) 150ms forwards',
             opacity: 0,
             transform: 'translateY(16px)'
@@ -113,30 +113,29 @@ export const InitialSplashScreen: React.FC<InitialSplashScreenProps> = ({ onComp
       {/* Fade-In Subtitle */}
       <p
         style={{
-          color: 'var(--text-tertiary)',
-          fontSize: '0.875rem',
+          color: 'var(--text-secondary)',
+          fontSize: '0.85rem',
           marginTop: '6px',
-          fontWeight: 500,
-          letterSpacing: '0.06em',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
           textTransform: 'uppercase',
-          fontFamily: 'var(--font-display)',
+          fontFamily: 'var(--font-sans)',
           animation: 'fadeInSubtitle 700ms ease 350ms forwards',
           opacity: 0
         }}
       >
-        Beltar, Udayapur · Executive Inventory Platform
+        Premium Experience · Beltar, Udayapur
       </p>
 
       {/* Progress Bar Container */}
       <div
         style={{
           width: '220px',
-          height: '4px',
-          backgroundColor: 'var(--bg-hover)',
+          height: '5px',
+          backgroundColor: 'var(--border-color)',
           borderRadius: '9999px',
           marginTop: '2.5rem',
           overflow: 'hidden',
-          border: '1px solid var(--border-color)',
           position: 'relative',
           animation: 'fadeInProgress 600ms ease 450ms forwards',
           opacity: 0
@@ -146,10 +145,10 @@ export const InitialSplashScreen: React.FC<InitialSplashScreenProps> = ({ onComp
           style={{
             height: '100%',
             width: `${progress}%`,
-            background: 'linear-gradient(90deg, #10b981 0%, #34d399 100%)',
+            background: 'linear-gradient(90deg, #13352f 0%, #34d399 100%)',
             borderRadius: '9999px',
             transition: 'width 60ms linear',
-            boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)'
+            boxShadow: '0 0 10px rgba(19, 53, 47, 0.3)'
           }}
         />
       </div>

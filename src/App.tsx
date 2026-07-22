@@ -133,54 +133,56 @@ export const App: React.FC = () => {
       )}
       <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       
-      {/* 1. Desktop Sidebar Panel */}
+      {/* 1. Desktop Sidebar Panel (Velora Luxury Deep Forest Theme) */}
       <aside 
         className="app-sidebar"
         style={{ 
-          width: '250px', 
-          backgroundColor: 'var(--bg-panel)', 
-          borderRight: '1px solid var(--border-color)', 
+          width: '260px', 
+          backgroundColor: 'var(--bg-sidebar)', 
           display: 'flex', 
           flexDirection: 'column', 
-          flexShrink: 0 
+          flexShrink: 0,
+          color: 'var(--text-sidebar-item)'
         }}
       >
         {/* Brand/Logo */}
         <div 
           style={{ 
-            padding: '1.25rem 1.5rem', 
-            borderBottom: '1px solid var(--border-color)', 
+            padding: '1.75rem 1.5rem 1.25rem', 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '10px' 
+            gap: '12px' 
           }}
         >
           <div 
             style={{ 
-              width: '34px', 
-              height: '34px', 
-              borderRadius: 'var(--radius-sm)', 
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
+              width: '38px', 
+              height: '38px', 
+              borderRadius: '50%', 
+              background: '#f6ddd6', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              color: '#ffffff',
+              color: '#13352f',
               fontWeight: 800,
-              fontSize: '1.05rem',
-              fontFamily: 'var(--font-display)',
-              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+              fontSize: '1.15rem',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
             }}
           >
-            A
+            🌸
           </div>
           <div>
-            <span className="heading-display" style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', display: 'block', letterSpacing: '-0.03em' }}>Anju Auto Parts</span>
-            <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-display)', fontWeight: 600 }}>Beltar, Udayapur</span>
+            <span className="heading-display" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', display: 'block', letterSpacing: '-0.02em', fontFamily: 'var(--font-display)' }}>
+              Anju Auto Parts
+            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-sidebar-sub)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>
+              Premium Experience · Beltar
+            </span>
           </div>
         </div>
 
         {/* Sidebar Nav items */}
-        <nav style={{ flex: 1, padding: '1.25rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '1rem 1rem', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
           {navItems.map(item => {
             const Icon = item.icon;
             const isActive = currentScreen === item.id;
@@ -192,69 +194,77 @@ export const App: React.FC = () => {
                 style={{
                   justifyContent: 'flex-start',
                   width: '100%',
-                  padding: '9px 12px',
-                  borderRadius: 'var(--radius-sm)',
+                  padding: '10px 16px',
+                  borderRadius: '9999px',
                   fontSize: '13.5px',
                   fontWeight: isActive ? 700 : 500,
                   letterSpacing: '-0.01em',
-                  transition: 'all 150ms cubic-bezier(0.16, 1, 0.3, 1)',
-                  backgroundColor: isActive ? 'rgba(16, 185, 129, 0.10)' : 'transparent',
-                  color: isActive ? 'var(--color-brand)' : 'var(--text-secondary)',
-                  borderLeft: isActive ? '3px solid #10b981' : '3px solid transparent',
-                  boxShadow: isActive ? '-2px 0 10px rgba(16, 185, 129, 0.4)' : 'none',
-                  paddingLeft: isActive ? '9px' : '12px',
+                  transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+                  backgroundColor: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
+                  color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)',
+                  boxShadow: isActive ? '0 4px 14px rgba(0,0,0,0.15)' : 'none',
+                  border: 'none',
                 }}
               >
-                <Icon size={18} color={isActive ? 'var(--color-brand)' : 'currentColor'} />
+                <Icon size={17} color={isActive ? 'var(--text-sidebar-active)' : 'currentColor'} />
                 <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* User profile info */}
-        <div 
-          style={{ 
-            padding: '1rem', 
-            borderTop: '1px solid var(--border-color)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            backgroundColor: 'var(--bg-hover)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div 
-              style={{ 
-                width: '32px', 
-                height: '32px', 
-                borderRadius: 'var(--radius-full)', 
-                backgroundColor: 'rgba(16, 185, 129, 0.15)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                color: 'var(--color-brand)'
-              }}
-            >
-              PY
-            </div>
-            <div>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', color: 'var(--text-primary)' }}>Pankaj</span>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Pankaj.ydv707@gmail.com</span>
+        {/* Bottom Quote Card & User profile */}
+        <div style={{ padding: '1rem' }}>
+          <div
+            style={{
+              padding: '1.15rem 1rem',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              backdropFilter: 'blur(10px)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            <div style={{ fontSize: '1rem', color: '#f6ddd6', opacity: 0.8, marginBottom: '4px' }}>“</div>
+            <p style={{ fontSize: '0.725rem', color: '#d8e5e2', fontStyle: 'italic', lineHeight: 1.4, margin: 0 }}>
+              The secret of getting ahead is getting started.
+            </p>
+            <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)', display: 'block', marginTop: '6px', fontWeight: 600 }}>— Mark Twain</span>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div 
+                style={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  borderRadius: '50%', 
+                  backgroundColor: '#f6ddd6', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  color: '#13352f'
+                }}
+              >
+                PY
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pankaj</span>
+                <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)' }}>Store Admin</span>
+              </div>
+              <span 
+                style={{ 
+                  width: '8px', 
+                  height: '8px', 
+                  borderRadius: '50%', 
+                  backgroundColor: '#34d399', 
+                  boxShadow: '0 0 8px #34d399' 
+                }}
+                title="Online Admin"
+              />
             </div>
           </div>
-          <span 
-            style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              backgroundColor: 'var(--color-success)', 
-              boxShadow: '0 0 8px var(--color-success)' 
-            }}
-            title="Online Admin"
-          />
         </div>
       </aside>
 
@@ -267,16 +277,17 @@ export const App: React.FC = () => {
           <aside 
             className="mobile-nav-drawer"
             onClick={e => e.stopPropagation()}
+            style={{ backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-sidebar-item)' }}
           >
-            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-sm)', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800 }}>A</div>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f6ddd6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#13352f', fontWeight: 800 }}>🌸</div>
                 <div>
-                  <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', display: 'block' }}>Anju Auto Parts</span>
-                  <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>Beltar, Udayapur</span>
+                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#ffffff', display: 'block', fontFamily: 'var(--font-display)' }}>Anju Auto Parts</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-sidebar-sub)' }}>Beltar, Udayapur</span>
                 </div>
               </div>
-              <button onClick={() => setIsMobileNavOpen(false)} className="btn btn-ghost" style={{ padding: '6px' }}>
+              <button onClick={() => setIsMobileNavOpen(false)} className="btn btn-ghost" style={{ padding: '6px', color: '#ffffff' }}>
                 <X size={20} />
               </button>
             </div>
@@ -293,16 +304,15 @@ export const App: React.FC = () => {
                     style={{
                       justifyContent: 'flex-start',
                       width: '100%',
-                      padding: '12px 14px',
-                      borderRadius: 'var(--radius-sm)',
+                      padding: '12px 16px',
+                      borderRadius: '9999px',
                       fontSize: '14px',
                       fontWeight: isActive ? 700 : 500,
-                      backgroundColor: isActive ? 'rgba(16, 185, 129, 0.10)' : 'transparent',
-                      color: isActive ? 'var(--color-brand)' : 'var(--text-secondary)',
-                      borderLeft: isActive ? '3px solid #10b981' : '3px solid transparent'
+                      backgroundColor: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
+                      color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)'
                     }}
                   >
-                    <Icon size={18} color={isActive ? 'var(--color-brand)' : 'currentColor'} />
+                    <Icon size={18} color={isActive ? 'var(--text-sidebar-active)' : 'currentColor'} />
                     <span>{item.label}</span>
                   </button>
                 );
@@ -313,20 +323,19 @@ export const App: React.FC = () => {
       )}
 
       {/* 3. Main Content Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: 'var(--bg-app)' }}>
         
         {/* Navigation Header */}
         <header 
           className="app-header"
           style={{ 
-            height: '64px', 
-            backgroundColor: 'var(--bg-panel)', 
-            borderBottom: '1px solid var(--border-color)', 
+            height: '72px', 
+            backgroundColor: 'var(--bg-app)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between', 
-            padding: '0 1.5rem',
-            gap: '1rem',
+            padding: '0 2rem',
+            gap: '1.5rem',
             flexShrink: 0 
           }}
         >
@@ -338,9 +347,9 @@ export const App: React.FC = () => {
             style={{ 
               display: 'none',
               padding: '8px',
-              borderRadius: 'var(--radius-sm)',
+              borderRadius: '9999px',
               border: '1px solid var(--border-color)',
-              backgroundColor: 'var(--bg-hover)',
+              backgroundColor: 'var(--bg-panel)',
               color: 'var(--text-primary)',
               cursor: 'pointer'
             }}
@@ -349,7 +358,7 @@ export const App: React.FC = () => {
           </button>
 
           {/* Quick Search - Centered SaaS style */}
-          <div className="header-search-container" style={{ flex: 1, maxWidth: '440px' }}>
+          <div className="header-search-container" style={{ flex: 1, maxWidth: '460px' }}>
             <button 
               type="button"
               onClick={() => setIsCmdOpen(true)}
@@ -357,30 +366,30 @@ export const App: React.FC = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '10px', 
-                padding: '10px 14px', 
+                padding: '10px 18px', 
                 height: '44px',
-                borderRadius: 'var(--radius-sm)', 
-                backgroundColor: 'var(--bg-hover)', 
+                borderRadius: '9999px', 
+                backgroundColor: 'var(--bg-panel)', 
                 border: '1px solid var(--border-color)', 
                 color: 'var(--text-tertiary)',
-                fontSize: '0.825rem',
+                fontSize: '0.85rem',
                 cursor: 'pointer',
                 width: '100%',
                 textAlign: 'left',
                 boxShadow: 'var(--shadow-sm)',
-                transition: 'all 120ms ease'
+                transition: 'all 150ms ease'
               }}
               className="search-cmd-btn"
             >
-              <Search size={18} style={{ color: 'var(--text-tertiary)' }} />
-              <span className="search-cmd-text" style={{ flex: 1, fontWeight: 400, color: 'var(--text-secondary)' }}>Search parts, orders, clients, or commands...</span>
+              <Search size={16} style={{ color: 'var(--text-tertiary)' }} />
+              <span className="search-cmd-text" style={{ flex: 1, fontWeight: 450, color: 'var(--text-secondary)' }}>Search anything...</span>
               <span 
                 className="cmd-k-shortcut"
                 style={{ 
                   fontSize: '0.625rem', 
-                  backgroundColor: 'var(--bg-panel)', 
-                  padding: '2px 5px', 
-                  borderRadius: '4px',
+                  backgroundColor: 'var(--bg-app)', 
+                  padding: '2px 7px', 
+                  borderRadius: '9999px',
                   border: '1px solid var(--border-color)',
                   display: 'flex',
                   alignItems: 'center',

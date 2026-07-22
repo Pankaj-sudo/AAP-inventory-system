@@ -189,26 +189,355 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
   }));
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', paddingBottom: '2rem' }}>
+    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', paddingBottom: '2.5rem' }}>
 
-      {/* ── Page Header ── */}
+      {/* ── Velora Page Header Greeting ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 className="heading-display" style={{ fontSize: '1.625rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.25 }}>
-            Executive Overview
+          <h1 
+            className="heading-display" 
+            style={{ 
+              fontSize: '2.1rem', 
+              fontWeight: 700, 
+              margin: 0, 
+              color: 'var(--text-primary)', 
+              letterSpacing: '-0.025em', 
+              lineHeight: 1.2,
+              fontFamily: 'var(--font-display)' 
+            }}
+          >
+            Good evening, Pankaj! 👋
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px', fontWeight: 400 }}>
-            Real-time business intelligence · Anju Auto Parts, Beltar, Udayapur
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '6px', fontWeight: 500 }}>
+            Here's what's happening with your business today · Anju Auto Parts
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', fontWeight: 600, padding: '7px 14px' }} onClick={() => onTriggerAction('create-po')}>
-            <ShoppingCart size={15} /> Create Purchase Order
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            className="btn" 
+            style={{ 
+              fontSize: '0.85rem', 
+              fontWeight: 600, 
+              padding: '10px 18px', 
+              borderRadius: '9999px',
+              backgroundColor: 'var(--bg-panel)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--shadow-sm)'
+            }} 
+            onClick={() => onTriggerAction('create-po')}
+          >
+            <ShoppingCart size={15} /> Create PO
           </button>
-          <button className="btn btn-primary" style={{ fontSize: '0.85rem', fontWeight: 600, padding: '7px 14px' }} onClick={() => onTriggerAction('create-sales')}>
-            <ShoppingBag size={15} /> Create Sales Invoice
+          <button 
+            className="btn" 
+            style={{ 
+              fontSize: '0.85rem', 
+              fontWeight: 700, 
+              padding: '10px 20px', 
+              borderRadius: '9999px',
+              backgroundColor: '#13352f',
+              color: '#f6ddd6',
+              border: 'none',
+              boxShadow: '0 4px 14px rgba(19,53,47,0.2)'
+            }} 
+            onClick={() => onTriggerAction('create-sales')}
+          >
+            <ShoppingBag size={15} /> + New Invoice
           </button>
         </div>
+      </div>
+
+      {/* ── Velora 3-Card Hero Banner Section (Image Design Language) ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
+        
+        {/* Hero Card 1: Dark Forest Teal Revenue Card */}
+        <div
+          style={{
+            backgroundColor: '#13352f',
+            color: '#ffffff',
+            borderRadius: '24px',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 12px 32px rgba(19,53,47,0.18)',
+            minHeight: '230px'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div 
+              style={{ 
+                width: '38px', height: '38px', borderRadius: '12px', 
+                backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', 
+                alignItems: 'center', justifyContent: 'center', color: '#f6ddd6', fontWeight: 800 
+              }}
+            >
+              M
+            </div>
+            <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(255,255,255,0.12)', padding: '4px 12px', borderRadius: '9999px', color: '#e2edea', fontWeight: 600 }}>
+              This Month ∨
+            </span>
+          </div>
+
+          <div style={{ marginTop: '1.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ebab3', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Total Revenue</span>
+            <div style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em', marginTop: '4px', fontVariantNumeric: 'tabular-nums' }}>
+              Rs {revenueKPIs.monthlyRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            </div>
+            <div style={{ fontSize: '0.78rem', color: '#34d399', marginTop: '4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <ArrowUpRight size={14} /> 16.2% from last month
+            </div>
+          </div>
+
+          {/* Decorative Sparkline Wave */}
+          <svg style={{ position: 'absolute', right: 0, bottom: 0, width: '100%', height: '70px', opacity: 0.25, pointerEvents: 'none' }} viewBox="0 0 300 70" preserveAspectRatio="none">
+            <path d="M0,50 Q60,10 120,40 T240,20 T300,35 L300,70 L0,70 Z" fill="url(#heroGrad)" />
+            <defs>
+              <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f6ddd6" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#13352f" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 1 }}>
+            <button
+              onClick={() => onNavigate('analytics')}
+              style={{
+                backgroundColor: '#f6ddd6',
+                color: '#13352f',
+                border: 'none',
+                padding: '8px 18px',
+                borderRadius: '9999px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}
+            >
+              View Report →
+            </button>
+          </div>
+        </div>
+
+        {/* Hero Card 2: Soft Gradient Pastel Blush Hero */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #fcedea 0%, #f7ded7 100%)',
+            color: '#13352f',
+            borderRadius: '24px',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 10px 28px rgba(246,221,214,0.4)',
+            border: '1px solid rgba(255,255,255,0.6)',
+            minHeight: '230px'
+          }}
+        >
+          <div>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#8c6b63', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Currently Running
+            </span>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 700, fontFamily: 'var(--font-display)', margin: '4px 0 0 0', color: '#13352f' }}>
+              Monsoon Season Stocking 🌸
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '1rem', backgroundColor: 'rgba(255,255,255,0.5)', padding: '12px', borderRadius: '16px', backdropFilter: 'blur(8px)' }}>
+            <div>
+              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>Budget</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>Rs 1.2L</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>Progress</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>68%</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>Items</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>{inventoryKPIs.totalProducts} Pcs</div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <button
+              onClick={() => onNavigate('inventory')}
+              style={{
+                backgroundColor: '#ffffff',
+                color: '#13352f',
+                border: 'none',
+                padding: '8px 18px',
+                borderRadius: '9999px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 12px rgba(19,53,47,0.06)'
+              }}
+            >
+              View Inventory →
+            </button>
+          </div>
+        </div>
+
+        {/* Hero Card 3: Calendar & Schedule Widget */}
+        <div
+          style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '24px',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid var(--border-color)',
+            minHeight: '230px'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+              July 2026
+            </span>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <span style={{ fontSize: '0.75rem', cursor: 'pointer', padding: '2px 8px', borderRadius: '6px', backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)' }}>‹</span>
+              <span style={{ fontSize: '0.75rem', cursor: 'pointer', padding: '2px 8px', borderRadius: '6px', backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)' }}>›</span>
+            </div>
+          </div>
+
+          {/* Date Strip */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginTop: '0.75rem' }}>
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+              <span key={day} style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>{day}</span>
+            ))}
+            {[18, 19, 20, 21, 22, 23, 24].map((date) => {
+              const isToday = date === 22;
+              return (
+                <div
+                  key={date}
+                  style={{
+                    padding: '6px 0',
+                    fontSize: '0.8rem',
+                    fontWeight: isToday ? 800 : 500,
+                    borderRadius: '50%',
+                    backgroundColor: isToday ? '#13352f' : 'transparent',
+                    color: isToday ? '#f6ddd6' : 'var(--text-primary)',
+                    margin: '2px auto',
+                    width: '28px',
+                    height: '28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: isToday ? '0 4px 10px rgba(19,53,47,0.3)' : 'none'
+                  }}
+                >
+                  {date}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Schedule Preview */}
+          <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+              <span style={{ color: 'var(--text-tertiary)', fontWeight: 600 }}>10:00 AM</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Supplier Stock Audit</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+              <span style={{ color: 'var(--text-tertiary)', fontWeight: 600 }}>02:30 PM</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Weekly Margin Review</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Velora Quick Action Bar (5 Pastel Action Pills) ── */}
+      <div 
+        style={{ 
+          backgroundColor: '#ffffff', 
+          borderRadius: '24px', 
+          padding: '1.25rem 1.5rem', 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+          gap: '1rem',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid var(--border-color)'
+        }}
+      >
+        <button
+          onClick={() => onTriggerAction('add-part')}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            background: 'none', border: 'none', cursor: 'pointer'
+          }}
+        >
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: '#fdede7', color: '#ff4769', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(255,71,105,0.15)' }}>
+            <Package size={22} />
+          </div>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>+ Add Part</span>
+        </button>
+
+        <button
+          onClick={() => onNavigate('customers')}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            background: 'none', border: 'none', cursor: 'pointer'
+          }}
+        >
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: '#e8f5ed', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(22,163,74,0.15)' }}>
+            <Coins size={22} />
+          </div>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Add Client</span>
+        </button>
+
+        <button
+          onClick={() => onTriggerAction('create-sales')}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            background: 'none', border: 'none', cursor: 'pointer'
+          }}
+        >
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: '#eaf0fb', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(37,99,235,0.15)' }}>
+            <ShoppingBag size={22} />
+          </div>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>New Invoice</span>
+        </button>
+
+        <button
+          onClick={() => onNavigate('invoices')}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            background: 'none', border: 'none', cursor: 'pointer'
+          }}
+        >
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: '#f7e8f5', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(147,51,234,0.15)' }}>
+            <BarChart2 size={22} />
+          </div>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Invoices</span>
+        </button>
+
+        <button
+          onClick={() => onNavigate('analytics')}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            background: 'none', border: 'none', cursor: 'pointer'
+          }}
+        >
+          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: '#fef7e7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(217,119,6,0.15)' }}>
+            <TrendingUp size={22} />
+          </div>
+          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Analytics</span>
+        </button>
       </div>
 
       {/* ── Section 1: Executive KPI Metrics ── */}
