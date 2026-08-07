@@ -1,4 +1,4 @@
-import type { Category, Supplier, VehicleModel, Part, PurchaseOrder, PurchaseOrderItem, PurchaseOrderStatus, SalesOrder, SalesOrderItem, SalesOrderStatus, StockMovement, StockMovementType, ProductHistoryLog, Customer, Invoice, Return, DamagedStock, StockAdjustment, AppNotification, NotificationType, NotificationPriority } from './schema';
+import type { Category, Supplier, VehicleModel, Part, PurchaseOrder, PurchaseOrderItem, PurchaseOrderStatus, SalesOrder, SalesOrderItem, SalesOrderStatus, StockMovement, StockMovementType, ProductHistoryLog, Customer, Invoice, Return, DamagedStock, StockAdjustment, AppNotification, NotificationType, NotificationPriority, Helmet } from './schema';
 import {
   INITIAL_CATEGORIES,
   INITIAL_SUPPLIERS,
@@ -14,7 +14,8 @@ import {
   INITIAL_RETURNS,
   INITIAL_DAMAGED_STOCK,
   INITIAL_STOCK_ADJUSTMENTS,
-  INITIAL_NOTIFICATIONS
+  INITIAL_NOTIFICATIONS,
+  INITIAL_HELMETS
 } from './mockData';
 
 const KEYS = {
@@ -33,11 +34,12 @@ const KEYS = {
   RETURNS: 'inv_returns',
   DAMAGED_STOCK: 'inv_damaged_stock',
   STOCK_ADJUSTMENTS: 'inv_stock_adjustments',
-  NOTIFICATIONS: 'inv_notifications'
+  NOTIFICATIONS: 'inv_notifications',
+  HELMETS: 'inv_helmets'
 };
 
 // ── Data Version: bump this to force a reseed on all browsers ──────────────
-const DATA_VERSION = '6.0'; // Store name updated to Anju Auto Parts (Beltar, Udayapur)
+const DATA_VERSION = '7.1'; // 3x3 Catalogue Grid Layout & 9 Helmet Products
 const VERSION_KEY = 'inv_data_version';
 const SHEET_URL_KEY = 'inv_google_sheet_url';
 
@@ -76,7 +78,7 @@ let _syncDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 function save<T>(key: string, data: T[]): void {
   localStorage.setItem(key, JSON.stringify(data));
   // Debounce auto-push — waits 2s after the LAST save before pushing
-  const sheetUrl = localStorage.getItem(SHEET_URL_KEY);
+  const sheetUrl = DB.getGoogleSheetUrl();
   if (sheetUrl) {
     if (_syncDebounceTimer) clearTimeout(_syncDebounceTimer);
     _syncDebounceTimer = setTimeout(() => {
@@ -943,6 +945,218 @@ export class DB {
     return this.getNotifications().filter(n => !n.isRead).length;
   }
 
+  // --- Helmets & Riding Gear Catalog ---
+  static getHelmets(): Helmet[] {
+    return getOrSeed(KEYS.HELMETS, INITIAL_HELMETS);
+  }
+  static saveHelmets(data: Helmet[]) {
+    save(KEYS.HELMETS, data);
+  }
+  static createHelmet(h: Omit<Helmet, 'id' | 'createdAt' | 'updatedAt'>): Helmet {
+    const list = this.getHelmets();
+    const now = new Date().toISOString();
+    const newHelmet: Helmet = {
+      ...h,
+      id: `hlm-${Date.now()}`,
+      gearType: h.gearType || 'Helmets',
+      createdAt: now,
+      updatedAt: now
+    };
+    list.push(newHelmet);
+    this.saveHelmets(list);
+
+    this.logProductHistory(newHelmet.id, 'CREATED', 'Pankaj.ydv707@gmail.com', `Helmet catalogued: ${newHelmet.productName} (SKU: ${newHelmet.sku}).`);
+    if (newHelmet.stockLevel > 0) {
+      this.logStockMovement(newHelmet.id, 'MANUAL_ADJUST', newHelmet.stockLevel, 'INITIAL_LOAD', `Initial stock recorded for ${newHelmet.productName}.`);
+    }
+    return newHelmet;
+  }
+  static updateHelmet(h: Helmet): void {
+    const list = this.getHelmets();
+    const idx = list.findIndex(item => item.id === h.id);
+    if (idx === -1) return;
+
+    const old = list[idx];
+    const updated: Helmet = {
+      ...h,
+      updatedAt: new Date().toISOString()
+    };
+    list[idx] = updated;
+    this.saveHelmets(list);
+
+    // Track stock changes
+    if (old.stockLevel !== updated.stockLevel) {
+      const diff = updated.stockLevel - old.stockLevel;
+      this.logStockMovement(
+        updated.id,
+        'MANUAL_ADJUST',
+        diff,
+        'MANUAL',
+        `Helmet stock adjustment: ${diff > 0 ? '+' : ''}${diff} units for ${updated.productName}.`
+      );
+      if (updated.stockLevel === 0) {
+        this.createNotification('OUT_OF_STOCK', 'Helmet Out of Stock', `${updated.productName} (${updated.sku}) is now out of stock.`, updated.id, 'HIGH', 'helmets');
+      } else if (updated.stockLevel <= updated.reorderPoint) {
+        this.createNotification('LOW_STOCK', 'Helmet Low Stock Alert', `${updated.productName} (${updated.sku}) is low on stock (${updated.stockLevel} left, Min: ${updated.reorderPoint}).`, updated.id, 'HIGH', 'helmets');
+      }
+    }
+    this.logProductHistory(updated.id, 'EDITED', 'Pankaj.ydv707@gmail.com', `Updated attributes for helmet "${updated.productName}".`);
+  }
+  static deleteHelmet(id: string): void {
+    const list = this.getHelmets();
+    const target = list.find(h => h.id === id);
+    if (!target) return;
+
+    const filtered = list.filter(h => h.id !== id);
+    this.saveHelmets(filtered);
+    this.logProductHistory(id, 'DELETED', 'Pankaj.ydv707@gmail.com', `Helmet "${target.productName}" deleted from catalogue.`);
+  }
+  static duplicateHelmet(id: string): Helmet | null {
+    const list = this.getHelmets();
+    const target = list.find(h => h.id === id);
+    if (!target) return null;
+
+    const now = new Date().toISOString();
+    const dup: Helmet = {
+      ...target,
+      id: `hlm-${Date.now()}`,
+      productName: `${target.productName} (Copy)`,
+      sku: `${target.sku}-COPY-${Math.floor(Math.random() * 1000)}`,
+      barcode: `890${Date.now().toString().slice(-9)}`,
+      createdAt: now,
+      updatedAt: now
+    };
+    list.push(dup);
+    this.saveHelmets(list);
+    this.logProductHistory(dup.id, 'CREATED', 'Pankaj.ydv707@gmail.com', `Duplicated from "${target.productName}".`);
+    return dup;
+  }
+  static adjustHelmetStock(id: string, delta: number, type: StockMovementType = 'MANUAL_ADJUST', notes: string = ''): void {
+    const list = this.getHelmets();
+    const idx = list.findIndex(h => h.id === id);
+    if (idx === -1) return;
+
+    const helmet = list[idx];
+    const newStock = Math.max(0, helmet.stockLevel + delta);
+    helmet.stockLevel = newStock;
+    helmet.updatedAt = new Date().toISOString();
+    this.saveHelmets(list);
+
+    this.logStockMovement(helmet.id, type, delta, 'ADJUSTMENT', notes || `Stock adjusted ${delta > 0 ? '+' : ''}${delta} units.`);
+  }
+
+  static exportHelmetsCSV(): string {
+    const helmets = this.getHelmets();
+    const headers = [
+      'Product Name', 'Brand', 'Model', 'SKU', 'Barcode',
+      'Purchase Price', 'Wholesale Price', 'Retail Price',
+      'Current Stock', 'Min Stock', 'Max Stock',
+      'Weight', 'Size', 'Colour', 'Category', 'Description', 'Google Drive Image URL'
+    ];
+    const rows = helmets.map(h => [
+      `"${h.productName.replace(/"/g, '""')}"`,
+      `"${h.brand}"`,
+      `"${h.model}"`,
+      `"${h.sku}"`,
+      `"${h.barcode}"`,
+      h.purchasePrice,
+      h.wholesalePrice,
+      h.salePrice,
+      h.stockLevel,
+      h.reorderPoint,
+      h.maxStock,
+      `"${h.weight}"`,
+      `"${h.size}"`,
+      `"${h.colour}"`,
+      `"${h.category}"`,
+      `"${h.description.replace(/"/g, '""')}"`,
+      `"${h.imageUrl}"`
+    ].join(','));
+    return [headers.join(','), ...rows].join('\n');
+  }
+
+  static importHelmetsCSV(csvText: string): { successCount: number; errors: string[] } {
+    const lines = csvText.split('\n');
+    if (lines.length < 2) return { successCount: 0, errors: ['CSV file is empty or missing header/rows.'] };
+
+    const parseRow = (text: string): string[] => {
+      const res: string[] = [];
+      let cell = '';
+      let insideQuote = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === '"') insideQuote = !insideQuote;
+        else if (char === ',' && !insideQuote) { res.push(cell.trim()); cell = ''; }
+        else cell += char;
+      }
+      res.push(cell.trim());
+      return res;
+    };
+
+    const headers = parseRow(lines[0]).map(h => h.replace(/^"|"$/g, '').trim().toLowerCase());
+    const list = this.getHelmets();
+    let successCount = 0;
+    const errors: string[] = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const cells = parseRow(line).map(c => c.replace(/^"|"$/g, ''));
+      const row: Record<string, string> = {};
+      headers.forEach((h, idx) => { row[h] = cells[idx] || ''; });
+
+      const name = row['product name'] || row['name'] || row['productname'];
+      const brand = row['brand'] || 'SMK';
+      const sku = row['sku'] || `SKU-${Date.now()}-${i}`;
+      if (!name) {
+        errors.push(`Row ${i + 1}: Missing product name.`);
+        continue;
+      }
+
+      const existingIdx = list.findIndex(h => h.sku === sku || h.productName.toLowerCase() === name.toLowerCase());
+      const purchasePrice = parseFloat(row['purchase price'] || row['purchaseprice'] || row['cost price'] || '0') || 0;
+      const wholesalePrice = parseFloat(row['wholesale price'] || row['wholesaleprice'] || '0') || purchasePrice;
+      const salePrice = parseFloat(row['retail price'] || row['retailprice'] || row['selling price'] || '0') || wholesalePrice;
+      const stockLevel = parseInt(row['current stock'] || row['currentstock'] || row['stock'] || '0') || 0;
+      const reorderPoint = parseInt(row['min stock'] || row['minstock'] || row['reorderpoint'] || '5') || 5;
+      const maxStock = parseInt(row['max stock'] || row['maxstock'] || '50') || 50;
+
+      const helmetData: Helmet = {
+        id: existingIdx !== -1 ? list[existingIdx].id : `hlm-${Date.now()}-${i}`,
+        productName: name,
+        brand,
+        model: row['model'] || brand,
+        sku,
+        barcode: row['barcode'] || `890${Date.now().toString().slice(-9)}`,
+        purchasePrice,
+        wholesalePrice,
+        salePrice,
+        stockLevel,
+        reorderPoint,
+        maxStock,
+        weight: row['weight'] || '1400g',
+        size: row['size'] || 'L',
+        colour: row['colour'] || row['color'] || 'Black',
+        category: row['category'] || 'Full Face',
+        gearType: 'Helmets',
+        description: row['description'] || '',
+        imageUrl: row['google drive image url'] || row['image url'] || row['imageurl'] || '',
+        createdAt: existingIdx !== -1 ? list[existingIdx].createdAt : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      if (existingIdx !== -1) {
+        list[existingIdx] = helmetData;
+      } else {
+        list.push(helmetData);
+      }
+      successCount++;
+    }
+
+    this.saveHelmets(list);
+    return { successCount, errors };
+  }
+
   // ─── Google Sheets Sync Methods ────────────────────────────────────────────
   static getGoogleSheetUrl(): string {
     return localStorage.getItem(SHEET_URL_KEY) || 'https://script.google.com/macros/s/AKfycbywTDidj9kH4D2yZUbIiIIiYVZujsqKiqO-UQhCoO6buMc5Mo3_lBLkXAu8xX6eEztiPA/exec';
@@ -961,6 +1175,7 @@ export class DB {
       suppliers: this.getSuppliers(),
       vehicles: this.getVehicles(),
       parts: this.getParts(),
+      helmets: this.getHelmets(),
       purchase_orders: this.getPurchaseOrders(),
       purchase_order_items: this.getPurchaseOrderItems(),
       sales_orders: this.getSalesOrders(),
@@ -982,8 +1197,6 @@ export class DB {
         body: JSON.stringify(payload),
         redirect: 'follow'
       });
-      // Google Apps Script redirects (302) on POST; fetch follows with redirect:'follow'
-      // A successful response returns JSON { status: "success" }
       if (!response.ok) {
         console.error('Sync push HTTP error:', response.status, response.statusText);
         return false;
@@ -1002,26 +1215,38 @@ export class DB {
 
     try {
       const response = await fetch(url);
-      const data = await response.json();
+      if (!response.ok) {
+        console.error('Sync pull HTTP error:', response.status, response.statusText);
+        return false;
+      }
+
+      const text = await response.text();
+      let data: Record<string, unknown[]>;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        console.error('Sync pull JSON parse error. Endpoint returned non-JSON content.', err);
+        return false;
+      }
       
-      if (data && typeof data === 'object') {
-        // Use saveLocal to bypass auto-push — we don't want a pull to trigger 16 pushes
-        if (data.categories) saveLocal(KEYS.CATEGORIES, data.categories);
-        if (data.suppliers) saveLocal(KEYS.SUPPLIERS, data.suppliers);
-        if (data.vehicles) saveLocal(KEYS.VEHICLES, data.vehicles);
-        if (data.parts) saveLocal(KEYS.PARTS, data.parts);
-        if (data.purchase_orders) saveLocal(KEYS.PURCHASE_ORDERS, data.purchase_orders);
-        if (data.purchase_order_items) saveLocal(KEYS.PURCHASE_ORDER_ITEMS, data.purchase_order_items);
-        if (data.sales_orders) saveLocal(KEYS.SALES_ORDERS, data.sales_orders);
-        if (data.sales_order_items) saveLocal(KEYS.SALES_ORDER_ITEMS, data.sales_order_items);
-        if (data.stock_movements) saveLocal(KEYS.STOCK_MOVEMENTS, data.stock_movements);
-        if (data.history_logs) saveLocal(KEYS.HISTORY_LOGS, data.history_logs);
-        if (data.customers) saveLocal(KEYS.CUSTOMERS, data.customers);
-        if (data.invoices) saveLocal(KEYS.INVOICES, data.invoices);
-        if (data.returns) saveLocal(KEYS.RETURNS, data.returns);
-        if (data.damaged_stock) saveLocal(KEYS.DAMAGED_STOCK, data.damaged_stock);
-        if (data.stock_adjustments) saveLocal(KEYS.STOCK_ADJUSTMENTS, data.stock_adjustments);
-        if (data.notifications) saveLocal(KEYS.NOTIFICATIONS, data.notifications);
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        if (data.categories && Array.isArray(data.categories)) saveLocal(KEYS.CATEGORIES, data.categories);
+        if (data.suppliers && Array.isArray(data.suppliers)) saveLocal(KEYS.SUPPLIERS, data.suppliers);
+        if (data.vehicles && Array.isArray(data.vehicles)) saveLocal(KEYS.VEHICLES, data.vehicles);
+        if (data.parts && Array.isArray(data.parts)) saveLocal(KEYS.PARTS, data.parts);
+        if (data.helmets && Array.isArray(data.helmets)) saveLocal(KEYS.HELMETS, data.helmets);
+        if (data.purchase_orders && Array.isArray(data.purchase_orders)) saveLocal(KEYS.PURCHASE_ORDERS, data.purchase_orders);
+        if (data.purchase_order_items && Array.isArray(data.purchase_order_items)) saveLocal(KEYS.PURCHASE_ORDER_ITEMS, data.purchase_order_items);
+        if (data.sales_orders && Array.isArray(data.sales_orders)) saveLocal(KEYS.SALES_ORDERS, data.sales_orders);
+        if (data.sales_order_items && Array.isArray(data.sales_order_items)) saveLocal(KEYS.SALES_ORDER_ITEMS, data.sales_order_items);
+        if (data.stock_movements && Array.isArray(data.stock_movements)) saveLocal(KEYS.STOCK_MOVEMENTS, data.stock_movements);
+        if (data.history_logs && Array.isArray(data.history_logs)) saveLocal(KEYS.HISTORY_LOGS, data.history_logs);
+        if (data.customers && Array.isArray(data.customers)) saveLocal(KEYS.CUSTOMERS, data.customers);
+        if (data.invoices && Array.isArray(data.invoices)) saveLocal(KEYS.INVOICES, data.invoices);
+        if (data.returns && Array.isArray(data.returns)) saveLocal(KEYS.RETURNS, data.returns);
+        if (data.damaged_stock && Array.isArray(data.damaged_stock)) saveLocal(KEYS.DAMAGED_STOCK, data.damaged_stock);
+        if (data.stock_adjustments && Array.isArray(data.stock_adjustments)) saveLocal(KEYS.STOCK_ADJUSTMENTS, data.stock_adjustments);
+        if (data.notifications && Array.isArray(data.notifications)) saveLocal(KEYS.NOTIFICATIONS, data.notifications);
         
         window.dispatchEvent(new Event('storage'));
         return true;

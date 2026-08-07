@@ -251,3 +251,53 @@ export interface AppNotification {
   priority: NotificationPriority;
   navigateTo?: string;
 }
+
+// ─── Helmets & Product Catalog Module ────────────────────────────────────────
+
+export type HelmetCategory =
+  | 'Full Face'
+  | 'Open Face'
+  | 'Modular'
+  | 'Off Road'
+  | 'Adventure'
+  | 'Half Face'
+  | 'Motocross'
+  | 'Dual Sport';
+
+export type HelmetBrand =
+  | 'SMK'
+  | 'LS2'
+  | 'Steelbird'
+  | 'Studds'
+  | 'Axor'
+  | 'MT'
+  | 'AGV'
+  | 'HJC'
+  | 'Shoei'
+  | 'Arai'
+  | 'Others';
+
+export interface Helmet {
+  id: string;
+  productName: string;
+  brand: HelmetBrand | string;
+  model: string;
+  sku: string;
+  barcode: string;
+  purchasePrice: number;
+  wholesalePrice: number;
+  salePrice: number;
+  stockLevel: number;
+  reorderPoint: number;
+  maxStock: number;
+  weight: string;
+  size: string;
+  colour: string;
+  category: HelmetCategory | string;
+  gearType?: string; // Scalable for Gloves, Jackets, Boots, Raincoats, Luggage, Accessories (default: 'Helmets')
+  description: string;
+  imageUrl: string; // Google Drive Image URL or web image URL
+  createdAt: string;
+  updatedAt: string;
+}
+

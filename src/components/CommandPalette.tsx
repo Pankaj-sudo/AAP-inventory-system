@@ -25,10 +25,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   // Filter commands and parts
   const allParts = DB.getParts();
+  const allHelmets = DB.getHelmets();
 
   const navigationCommands = [
     { label: 'Go to Dashboard Overview', shortcut: 'G D', action: () => onNavigate('dashboard') },
     { label: 'Go to Parts Inventory Catalog', shortcut: 'G I', action: () => onNavigate('inventory') },
+    { label: 'Go to 🪖 Helmets Catalogue', shortcut: 'G H', action: () => onNavigate('helmets') },
     { label: 'Go to Customers List', shortcut: 'G C', action: () => onNavigate('customers') },
     { label: 'Go to Tax Invoices Ledger', shortcut: 'G F', action: () => onNavigate('invoices') },
     { label: 'Go to Supplier Channels', shortcut: 'G V', action: () => onNavigate('suppliers') },
@@ -56,9 +58,20 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       ? allParts.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.oemNumber.toLowerCase().includes(q))
       : [];
 
+    // Helmets matching search
+    const matchedHelmets = q.length > 0
+      ? allHelmets.filter(h => h.productName.toLowerCase().includes(q) || h.sku.toLowerCase().includes(q) || h.brand.toLowerCase().includes(q))
+      : [];
+
     return [
       ...matchedNavs.map(c => ({ type: 'command' as const, label: c.label, shortcut: c.shortcut, execute: c.action })),
       ...matchedActions.map(c => ({ type: 'action' as const, label: c.label, shortcut: c.shortcut, execute: c.action })),
+      ...matchedHelmets.map(h => ({
+        type: 'part' as const,
+        label: `🪖 ${h.productName} (${h.brand})`,
+        shortcut: h.sku,
+        execute: () => onNavigate('helmets')
+      })),
       ...matchedParts.map(p => ({
         type: 'part' as const,
         label: p.name,

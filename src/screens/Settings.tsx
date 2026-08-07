@@ -141,10 +141,6 @@ function doGet(e) {
         if (typeof val === 'string' && (val.indexOf('[') === 0 || val.indexOf('{') === 0)) {
           try { val = JSON.parse(val); } catch(err) {}
         }
-        // Coerce numeric strings back to numbers
-        if (typeof val === 'string' && val !== '' && !isNaN(Number(val))) {
-          val = Number(val);
-        }
         // Coerce boolean strings
         if (val === 'true') val = true;
         if (val === 'false') val = false;

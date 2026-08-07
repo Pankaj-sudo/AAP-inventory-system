@@ -16,7 +16,8 @@ import {
   FileText,
   RotateCcw,
   Menu,
-  X
+  X,
+  HardHat
 } from 'lucide-react';
 
 import type { Part } from './database/schema';
@@ -24,6 +25,7 @@ import type { Part } from './database/schema';
 // Import Screens
 import Dashboard from './screens/Dashboard';
 import Inventory from './screens/Inventory';
+import Helmets from './screens/Helmets';
 import Suppliers from './screens/Suppliers';
 import Sales from './screens/Sales';
 import Analytics from './screens/Analytics';
@@ -117,6 +119,7 @@ export const App: React.FC = () => {
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: LayoutGrid },
     { id: 'inventory', label: 'Parts Inventory', icon: Boxes },
+    { id: 'helmets', label: '🪖 Helmets', icon: HardHat },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'invoices', label: 'Invoices', icon: FileText },
     { id: 'suppliers', label: 'Suppliers', icon: Building2 },
@@ -156,20 +159,23 @@ export const App: React.FC = () => {
         >
           <div 
             style={{ 
-              width: '38px', 
-              height: '38px', 
-              borderRadius: '50%', 
-              background: '#f6ddd6', 
+              width: '40px', 
+              height: '40px', 
+              borderRadius: '8px', 
+              backgroundColor: 'rgba(255,255,255,0.05)', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              color: '#13352f',
-              fontWeight: 800,
-              fontSize: '1.15rem',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              overflow: 'hidden',
+              padding: '2px'
             }}
           >
-            🌸
+            <img 
+              src="/logo.png" 
+              alt="AAP Logo" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+            />
           </div>
           <div>
             <span className="heading-display" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', display: 'block', letterSpacing: '-0.02em', fontFamily: 'var(--font-display)' }}>
@@ -439,6 +445,10 @@ export const App: React.FC = () => {
               isOpenAddModal={isOpenAddModal}
               setIsOpenAddModal={setIsOpenAddModal}
             />
+          )}
+
+          {currentScreen === 'helmets' && (
+            <Helmets />
           )}
 
           {currentScreen === 'customers' && (
