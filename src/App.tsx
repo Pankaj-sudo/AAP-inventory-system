@@ -129,11 +129,12 @@ export const App: React.FC = () => {
     { id: 'settings', label: 'Settings', icon: SettingsIcon },
   ];
 
+  if (isAppLoading) {
+    return <InitialSplashScreen onComplete={() => setIsAppLoading(false)} />;
+  }
+
   return (
     <>
-      {isAppLoading && (
-        <InitialSplashScreen onComplete={() => setIsAppLoading(false)} />
-      )}
       <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       
       {/* 1. Desktop Sidebar Panel (Velora Luxury Deep Forest Theme) */}
@@ -219,7 +220,7 @@ export const App: React.FC = () => {
           })}
         </nav>
 
-        {/* Bottom Quote Card & User profile */}
+        {/* Bottom User profile */}
         <div style={{ padding: '1rem' }}>
           <div
             style={{
@@ -232,43 +233,28 @@ export const App: React.FC = () => {
               overflow: 'hidden'
             }}
           >
-            <div style={{ fontSize: '1rem', color: '#f6ddd6', opacity: 0.8, marginBottom: '4px' }}>“</div>
-            <p style={{ fontSize: '0.725rem', color: '#d8e5e2', fontStyle: 'italic', lineHeight: 1.4, margin: 0 }}>
-              The secret of getting ahead is getting started.
-            </p>
-            <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)', display: 'block', marginTop: '6px', fontWeight: 600 }}>— Mark Twain</span>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div 
                 style={{ 
                   width: '32px', 
                   height: '32px', 
                   borderRadius: '50%', 
-                  backgroundColor: '#f6ddd6', 
+                  backgroundColor: '#E52326', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  fontWeight: 700,
-                  fontSize: '0.8rem',
-                  color: '#13352f'
+                  fontWeight: 800,
+                  fontSize: '0.75rem',
+                  color: '#ffffff',
+                  boxShadow: '0 2px 8px rgba(229,35,38,0.3)'
                 }}
               >
-                PY
+                AAP
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pankaj</span>
-                <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)' }}>Store Admin</span>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Anju Auto Parts</span>
+                <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)' }}>Executive Inventory</span>
               </div>
-              <span 
-                style={{ 
-                  width: '8px', 
-                  height: '8px', 
-                  borderRadius: '50%', 
-                  backgroundColor: '#34d399', 
-                  boxShadow: '0 0 8px #34d399' 
-                }}
-                title="Online Admin"
-              />
             </div>
           </div>
         </div>
@@ -287,7 +273,9 @@ export const App: React.FC = () => {
           >
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f6ddd6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#13352f', fontWeight: 800 }}>🌸</div>
+                <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2px' }}>
+                  <img src="/logo.png" alt="AAP Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
                 <div>
                   <span style={{ fontWeight: 700, fontSize: '1rem', color: '#ffffff', display: 'block', fontFamily: 'var(--font-display)' }}>Anju Auto Parts</span>
                   <span style={{ fontSize: '0.65rem', color: 'var(--text-sidebar-sub)' }}>Beltar, Udayapur</span>
@@ -348,88 +336,84 @@ export const App: React.FC = () => {
           {/* Mobile Hamburger Toggle Button */}
           <button 
             type="button"
-            className="mobile-hamburger-btn"
-            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-            style={{ 
-              display: 'none',
-              padding: '8px',
-              borderRadius: '9999px',
-              border: '1px solid var(--border-color)',
-              backgroundColor: 'var(--bg-panel)',
-              color: 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
+            className="btn btn-ghost mobile-nav-toggle"
+            onClick={() => setIsMobileNavOpen(true)}
+            aria-label="Open navigation drawer"
+            style={{ color: 'var(--text-primary)' }}
           >
             <Menu size={20} />
           </button>
 
-          {/* Quick Search - Centered SaaS style */}
-          <div className="header-search-container" style={{ flex: 1, maxWidth: '460px' }}>
-            <button 
-              type="button"
+          {/* Search Trigger */}
+          <div style={{ flex: 1, maxWidth: '400px', display: 'flex', alignItems: 'center' }}>
+            <button
               onClick={() => setIsCmdOpen(true)}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '10px', 
-                padding: '10px 18px', 
-                height: '44px',
-                borderRadius: '9999px', 
-                backgroundColor: 'var(--bg-panel)', 
-                border: '1px solid var(--border-color)', 
-                color: 'var(--text-tertiary)',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 width: '100%',
-                textAlign: 'left',
-                boxShadow: 'var(--shadow-sm)',
-                transition: 'all 150ms ease'
+                padding: '9px 14px',
+                borderRadius: '9999px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-card)',
+                color: 'var(--text-tertiary)',
+                fontSize: '13px',
+                cursor: 'pointer',
+                transition: 'border-color 150ms ease',
               }}
-              className="search-cmd-btn"
             >
-              <Search size={16} style={{ color: 'var(--text-tertiary)' }} />
-              <span className="search-cmd-text" style={{ flex: 1, fontWeight: 450, color: 'var(--text-secondary)' }}>Search anything...</span>
-              <span 
-                className="cmd-k-shortcut"
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Search size={15} />
+                <span>Search parts, invoices, customers...</span>
+              </div>
+              <kbd 
                 style={{ 
-                  fontSize: '0.625rem', 
-                  backgroundColor: 'var(--bg-app)', 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '2px', 
                   padding: '2px 7px', 
-                  borderRadius: '9999px',
-                  border: '1px solid var(--border-color)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2px',
-                  fontWeight: 600,
-                  color: 'var(--text-tertiary)'
+                  borderRadius: '6px', 
+                  backgroundColor: 'var(--bg-subtle)', 
+                  border: '1px solid var(--border-color)', 
+                  fontSize: '11px', 
+                  fontFamily: 'inherit',
+                  color: 'var(--text-secondary)'
                 }}
               >
-                <Command size={9} /> K
-              </span>
+                <Command size={11} /> K
+              </kbd>
             </button>
           </div>
 
-          {/* Header Actions */}
+          {/* Header Action Tools */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            
-            {/* Notification Bell Center */}
             <NotificationBell onNavigate={handleNavigate} />
 
-            <button 
-              type="button" 
+            <button
               onClick={toggleDarkMode}
-              className="btn btn-ghost" 
-              style={{ padding: '7px 9px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}
-              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="btn btn-ghost"
+              style={{
+                width: '38px',
+                height: '38px',
+                padding: 0,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-card)',
+              }}
+              title={isDarkMode ? 'Switch to Light Luxury Theme' : 'Switch to Midnight Dark Theme'}
             >
-              {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+              {isDarkMode ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} />}
             </button>
-            
           </div>
         </header>
 
-        {/* Dynamic Screen View Content */}
-        <main style={{ flex: 1, padding: '1.5rem', overflowY: 'auto' }}>
+        {/* Dynamic Route Screen Panel */}
+        <main className="app-main-content" style={{ flex: 1, overflowY: 'auto', padding: '1.75rem 2rem 3rem' }}>
           {currentScreen === 'dashboard' && (
             <Dashboard 
               onNavigate={handleNavigate}
