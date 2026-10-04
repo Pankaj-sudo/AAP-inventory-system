@@ -6,7 +6,7 @@ import { Table } from '../components/Table';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { 
-  Plus, Printer, Search, Eye
+  Plus, Printer, Search, Eye, Trash2, ShoppingCart
 } from 'lucide-react';
 import type { SalesOrder } from '../database/schema';
 
@@ -23,6 +23,8 @@ export const Sales: React.FC<SalesProps> = ({
     salesOrders,
     createSalesOrder,
     updateSalesStatus,
+    deleteSalesOrder,
+    clearAllSalesOrders,
     getItemsForSale
   } = useSales();
 
@@ -229,101 +231,195 @@ export const Sales: React.FC<SalesProps> = ({
             Fulfill invoices for repair workshops, trade accounts, and retail sales.
           </p>
         </div>
-        <Button variant="primary" size="sm" onClick={() => setIsOpenAddSalesModal(true)}>
-          <Plus size={16} style={{ marginRight: '6px' }} /> Create Sales Invoice
-        </Button>
-      </div>
-
-      {/* Filter panel */}
-      <div className="panel" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-          <input
-            type="text"
-            placeholder="Search dispatch logs..."
-            className="form-input"
-            style={{ paddingLeft: '36px' }}
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {salesOrders.length > 0 && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                if (window.confirm('Are you sure you want to clear all sales orders? This will delete all order records.')) {
+                  clearAllSalesOrders();
+                }
+              }}
+            >
+              <Trash2 size={15} style={{ marginRight: '6px' }} /> Clear All Orders
+            </Button>
+          )}
+          <Button variant="primary" size="sm" onClick={() => setIsOpenAddSalesModal(true)}>
+            <Plus size={16} style={{ marginRight: '6px' }} /> Create Sales Invoice
+          </Button>
         </div>
-        <select
-          className="form-select"
-          style={{ width: '160px' }}
-          value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)}
-        >
-          <option value="ALL">All Statuses</option>
-          <option value="PENDING">Pending Dispatch</option>
-          <option value="DISPATCHED">Dispatched</option>
-          <option value="DELIVERED">Delivered</option>
-        </select>
       </div>
 
-      {/* Sales Orders Table */}
-      <div className="panel">
-        <Table
-          columns={[
-            {
-              header: 'Invoice ID / Date',
-              render: (row) => (
-                <div>
-                  <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{row.id}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Date: {row.saleDate}</div>
-                </div>
-              )
-            },
-            {
-              header: 'Customer / Workshop Account',
-              accessor: 'customerName',
-              render: (row) => <span style={{ fontWeight: 600 }}>{row.customerName}</span>
-            },
-            {
-              header: 'Invoice Sum',
-              render: (row) => <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Rs. {row.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-            },
-            {
-              header: 'Logistics Status',
-              render: (row) => {
-                let bClass = 'badge-secondary';
-                if (row.status === 'DELIVERED') bClass = 'badge-success';
-                if (row.status === 'DISPATCHED') bClass = 'badge-warning';
-                if (row.status === 'PENDING') bClass = 'badge-danger';
-                return <span className={`badge ${bClass}`}>{row.status}</span>;
-              }
-            },
-            {
-              header: 'Actions',
-              render: (row) => (
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <Button variant="ghost" size="sm" style={{ padding: '4px' }} onClick={() => {
-                    const saleItems = getItemsForSale(row.id);
-                    setSelectedSOForDetail({ ...row, items: saleItems });
-                  }}>
-                    <Eye size={14} />
-                  </Button>
-                  <Button variant="ghost" size="sm" style={{ padding: '4px' }} onClick={() => handlePrint(row)}>
-                    <Printer size={14} />
-                  </Button>
-                  {row.status === 'PENDING' && (
-                    <Button variant="secondary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => updateSalesStatus(row.id, 'DISPATCHED')}>
-                      Dispatch
-                    </Button>
-                  )}
-                  {row.status === 'DISPATCHED' && (
-                    <Button variant="primary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => updateSalesStatus(row.id, 'DELIVERED')}>
-                      Complete
-                    </Button>
-                  )}
-                </div>
-              )
-            }
-          ]}
-          data={filteredOrders}
-          keyExtractor={(row) => row.id}
-          emptyMessage="No sales dispatch invoices logged in system database."
-        />
-      </div>
+      {salesOrders.length === 0 ? (
+        /* Clean Empty State Card */
+        <div 
+          className="card"
+          style={{ 
+            padding: '3.5rem 2rem', 
+            textAlign: 'center', 
+            backgroundColor: 'var(--bg-panel)', 
+            border: '1px solid var(--border-color)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '14px'
+          }}
+        >
+          <div 
+            style={{ 
+              width: '56px', 
+              height: '56px', 
+              borderRadius: '14px', 
+              backgroundColor: 'var(--bg-hover)', 
+              border: '1px solid var(--border-color)',
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              color: 'var(--text-tertiary)'
+            }}
+          >
+            <ShoppingCart size={26} />
+          </div>
+          <h3 className="heading-display" style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+            No Sales Orders Yet
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '420px', margin: 0, lineHeight: 1.5 }}>
+            No sales orders logged. Click "Create Sales Invoice" to record counter walk-in sales or workshop dispatches.
+          </p>
+          <div style={{ marginTop: '6px' }}>
+            <Button variant="primary" size="sm" onClick={() => setIsOpenAddSalesModal(true)}>
+              <Plus size={16} style={{ marginRight: '6px' }} /> Create Sales Invoice
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Filter panel */}
+          <div className="panel" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
+              <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+              <input
+                type="text"
+                placeholder="Search dispatch logs..."
+                className="form-input"
+                style={{ paddingLeft: '36px' }}
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select
+              className="form-select"
+              style={{ width: '160px' }}
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">Pending Dispatch</option>
+              <option value="DISPATCHED">Dispatched</option>
+              <option value="DELIVERED">Delivered</option>
+            </select>
+          </div>
+
+          {/* Sales Orders Table */}
+          <div className="panel">
+            <Table
+              columns={[
+                {
+                  header: 'Invoice ID / Date',
+                  render: (row) => (
+                    <div>
+                      <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{row.id}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Date: {row.saleDate}</div>
+                    </div>
+                  )
+                },
+                {
+                  header: 'Customer / Workshop Account',
+                  accessor: 'customerName',
+                  render: (row) => <span style={{ fontWeight: 600 }}>{row.customerName}</span>
+                },
+                {
+                  header: 'Invoice Sum',
+                  render: (row) => <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Rs. {row.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                },
+                {
+                  header: 'Logistics Status',
+                  render: (row) => {
+                    let bClass = 'badge-secondary';
+                    if (row.status === 'DELIVERED') bClass = 'badge-success';
+                    if (row.status === 'DISPATCHED') bClass = 'badge-warning';
+                    if (row.status === 'PENDING') bClass = 'badge-danger';
+                    return <span className={`badge ${bClass}`}>{row.status}</span>;
+                  }
+                },
+                {
+                  header: 'Actions',
+                  render: (row) => (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Button variant="ghost" size="sm" style={{ padding: '4px' }} title="View Details" onClick={() => {
+                        const saleItems = getItemsForSale(row.id);
+                        setSelectedSOForDetail({ ...row, items: saleItems });
+                      }}>
+                        <Eye size={14} />
+                      </Button>
+                      <Button variant="ghost" size="sm" style={{ padding: '4px' }} title="Print Invoice" onClick={() => handlePrint(row)}>
+                        <Printer size={14} />
+                      </Button>
+                      {row.status === 'PENDING' && (
+                        <Button variant="secondary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => updateSalesStatus(row.id, 'DISPATCHED')}>
+                          Dispatch
+                        </Button>
+                      )}
+                      {row.status === 'DISPATCHED' && (
+                        <Button variant="primary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => updateSalesStatus(row.id, 'DELIVERED')}>
+                          Complete
+                        </Button>
+                      )}
+                      <button
+                        type="button"
+                        title={`Delete ${row.id}`}
+                        aria-label={`Delete ${row.id}`}
+                        onClick={() => {
+                          if (window.confirm(`Delete sales order ${row.id} for "${row.customerName}"?`)) {
+                            deleteSalesOrder(row.id);
+                          }
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--text-tertiary)',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          borderRadius: '6px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'color 0.15s, background-color 0.15s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-danger, #ef4444)';
+                          e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.12)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--text-tertiary)';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  )
+                }
+              ]}
+              data={filteredOrders}
+              keyExtractor={(row) => row.id}
+              emptyMessage="No sales dispatch invoices logged matching criteria."
+            />
+          </div>
+        </>
+      )}
 
       {/* Record Sales Invoice Modal */}
       <Modal

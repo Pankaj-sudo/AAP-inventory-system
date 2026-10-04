@@ -101,6 +101,18 @@ export function useSales() {
     window.dispatchEvent(new Event('storage'));
   };
 
+  const deleteSalesOrder = (id: string) => {
+    DB.deleteSalesOrder(id);
+    refreshData();
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  const clearAllSalesOrders = () => {
+    DB.clearAllSalesOrders();
+    refreshData();
+    window.dispatchEvent(new Event('storage'));
+  };
+
   const stats = useMemo(() => {
     const activeOrdersCount = salesOrders.filter(so => so.status === 'PENDING' || so.status === 'DISPATCHED').length;
     const totalSalesRevenue = salesOrders
@@ -117,6 +129,8 @@ export function useSales() {
     salesOrders,
     createSalesOrder,
     updateSalesStatus,
+    deleteSalesOrder,
+    clearAllSalesOrders,
     getItemsForSale,
     stats,
     refreshData

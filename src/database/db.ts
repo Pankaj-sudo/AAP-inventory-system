@@ -446,17 +446,50 @@ export class DB {
 
   // --- Sales Orders ---
   static getSalesOrders(): SalesOrder[] {
-    return getOrSeed(KEYS.SALES_ORDERS, INITIAL_SALES_ORDERS);
+    const list = getOrSeed(KEYS.SALES_ORDERS, INITIAL_SALES_ORDERS);
+    // Purge legacy mock sales orders (e.g. so-101 .. so-129, so-201, so-202, so-203)
+    const filtered = list.filter(so => !/^so-(1\d\d|20[123])$/.test(so.id));
+    if (filtered.length !== list.length) {
+      save(KEYS.SALES_ORDERS, filtered);
+    }
+    return filtered;
   }
   static saveSalesOrders(data: SalesOrder[]) {
     save(KEYS.SALES_ORDERS, data);
   }
   static getSalesOrderItems(): SalesOrderItem[] {
-    return getOrSeed(KEYS.SALES_ORDER_ITEMS, INITIAL_SALES_ORDER_ITEMS);
+    const list = getOrSeed(KEYS.SALES_ORDER_ITEMS, INITIAL_SALES_ORDER_ITEMS);
+    // Purge legacy mock sales order items (e.g. soi-101 .. soi-152, soi-1 .. soi-5)
+    const filtered = list.filter(item => !/^soi-(1\d\d|[1-5])$/.test(item.id));
+    if (filtered.length !== list.length) {
+      save(KEYS.SALES_ORDER_ITEMS, filtered);
+    }
+    return filtered;
   }
   static saveSalesOrderItems(data: SalesOrderItem[]) {
     save(KEYS.SALES_ORDER_ITEMS, data);
   }
+
+  static deleteSalesOrder(id: string): void {
+    const soList = this.getSalesOrders();
+    const targetSO = soList.find(so => so.id === id);
+    const list = soList.filter(so => so.id !== id);
+    this.saveSalesOrders(list);
+
+    const items = this.getSalesOrderItems().filter(item => item.salesOrderId !== id);
+    this.saveSalesOrderItems(items);
+
+    if (targetSO?.invoiceId) {
+      const invoices = this.getInvoices().filter(inv => inv.id !== targetSO.invoiceId);
+      this.saveInvoices(invoices);
+    }
+  }
+
+  static clearAllSalesOrders(): void {
+    this.saveSalesOrders([]);
+    this.saveSalesOrderItems([]);
+  }
+
 
   static createSalesOrder(
     customerName: string,
@@ -832,7 +865,12 @@ export class DB {
 
   // ─── Phase 4: Returns ────────────────────────────────────────────────────────
   static getReturns(): Return[] {
-    return getOrSeed(KEYS.RETURNS, INITIAL_RETURNS);
+    const list = getOrSeed(KEYS.RETURNS, INITIAL_RETURNS);
+    const filtered = list.filter(r => r.id !== 'ret-1');
+    if (filtered.length !== list.length) {
+      save(KEYS.RETURNS, filtered);
+    }
+    return filtered;
   }
   static saveReturns(data: Return[]) {
     save(KEYS.RETURNS, data);

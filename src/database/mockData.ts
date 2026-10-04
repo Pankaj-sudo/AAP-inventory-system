@@ -345,115 +345,10 @@ export const INITIAL_PARTS: Part[] = [
   }
 ];
 
-// ─── 12-Month Rich Sales Order History ────────────────────────────────────────
-export const INITIAL_SALES_ORDERS: SalesOrder[] = [
-  // August 2025
-  { id: 'so-101', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2025-08-05', totalAmount: 359.47 },
-  { id: 'so-102', customerName: 'Road & Track Rentals', status: 'DELIVERED', saleDate: '2025-08-12', totalAmount: 638.00 },
-  { id: 'so-103', customerName: 'SpeedZone Garage', status: 'DELIVERED', saleDate: '2025-08-22', totalAmount: 249.90 },
-  // September 2025
-  { id: 'so-104', customerName: 'MegaMoto Parts Hub', status: 'DELIVERED', saleDate: '2025-09-03', totalAmount: 1199.50 },
-  { id: 'so-105', customerName: 'Alex Mercer (Retail)', status: 'DELIVERED', saleDate: '2025-09-14', totalAmount: 79.99 },
-  { id: 'so-106', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2025-09-28', totalAmount: 834.00 },
-  // October 2025
-  { id: 'so-107', customerName: 'Road & Track Rentals', status: 'DELIVERED', saleDate: '2025-10-07', totalAmount: 1478.50 },
-  { id: 'so-108', customerName: 'City Bikes Pvt Ltd', status: 'DELIVERED', saleDate: '2025-10-19', totalAmount: 423.80 },
-  // November 2025
-  { id: 'so-109', customerName: 'SpeedZone Garage', status: 'DELIVERED', saleDate: '2025-11-02', totalAmount: 998.00 },
-  { id: 'so-110', customerName: 'MegaMoto Parts Hub', status: 'DELIVERED', saleDate: '2025-11-15', totalAmount: 1750.45 },
-  { id: 'so-111', customerName: 'Alex Mercer (Retail)', status: 'DELIVERED', saleDate: '2025-11-27', totalAmount: 159.00 },
-  // December 2025
-  { id: 'so-112', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2025-12-03', totalAmount: 2100.00 },
-  { id: 'so-113', customerName: 'Road & Track Rentals', status: 'DELIVERED', saleDate: '2025-12-18', totalAmount: 896.50 },
-  { id: 'so-114', customerName: 'City Bikes Pvt Ltd', status: 'DELIVERED', saleDate: '2025-12-29', totalAmount: 319.90 },
-  // January 2026
-  { id: 'so-115', customerName: 'SpeedZone Garage', status: 'DELIVERED', saleDate: '2026-01-08', totalAmount: 1320.00 },
-  { id: 'so-116', customerName: 'MegaMoto Parts Hub', status: 'DELIVERED', saleDate: '2026-01-21', totalAmount: 599.75 },
-  // February 2026
-  { id: 'so-117', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2026-02-05', totalAmount: 1089.00 },
-  { id: 'so-118', customerName: 'Alex Mercer (Retail)', status: 'DELIVERED', saleDate: '2026-02-19', totalAmount: 239.90 },
-  // March 2026
-  { id: 'so-119', customerName: 'Road & Track Rentals', status: 'DELIVERED', saleDate: '2026-03-04', totalAmount: 2340.00 },
-  { id: 'so-120', customerName: 'City Bikes Pvt Ltd', status: 'DELIVERED', saleDate: '2026-03-17', totalAmount: 756.80 },
-  { id: 'so-121', customerName: 'SpeedZone Garage', status: 'DELIVERED', saleDate: '2026-03-28', totalAmount: 469.50 },
-  // April 2026
-  { id: 'so-122', customerName: 'MegaMoto Parts Hub', status: 'DELIVERED', saleDate: '2026-04-09', totalAmount: 1678.00 },
-  { id: 'so-123', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2026-04-23', totalAmount: 894.95 },
-  // May 2026
-  { id: 'so-124', customerName: 'Road & Track Rentals', status: 'DELIVERED', saleDate: '2026-05-06', totalAmount: 3100.00 },
-  { id: 'so-125', customerName: 'Alex Mercer (Retail)', status: 'DELIVERED', saleDate: '2026-05-18', totalAmount: 99.50 },
-  { id: 'so-126', customerName: 'City Bikes Pvt Ltd', status: 'DELIVERED', saleDate: '2026-05-29', totalAmount: 1247.00 },
-  // June 2026
-  { id: 'so-127', customerName: 'SpeedZone Garage', status: 'DELIVERED', saleDate: '2026-06-03', totalAmount: 2198.00 },
-  { id: 'so-128', customerName: 'MegaMoto Parts Hub', status: 'DELIVERED', saleDate: '2026-06-14', totalAmount: 1350.00 },
-  { id: 'so-129', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2026-06-25', totalAmount: 680.00 },
-  // July 2026 (recent)
-  { id: 'so-201', customerName: 'DownTown Moto Workshop', status: 'DELIVERED', saleDate: '2026-07-10', totalAmount: 359.47 },
-  { id: 'so-202', customerName: 'Road & Track Rentals', status: 'DISPATCHED', saleDate: '2026-07-16', totalAmount: 1478.50 },
-  { id: 'so-203', customerName: 'Alex Mercer (Retail)', status: 'PENDING', saleDate: '2026-07-18', totalAmount: 79.99 },
-];
+// ─── Sales Orders & Items ─────────────────────────────────────────────────────
+export const INITIAL_SALES_ORDERS: SalesOrder[] = [];
+export const INITIAL_SALES_ORDER_ITEMS: SalesOrderItem[] = [];
 
-export const INITIAL_SALES_ORDER_ITEMS: SalesOrderItem[] = [
-  // Legacy items
-  { id: 'soi-101', salesOrderId: 'so-101', partId: 'part-1', quantity: 2, unitPrice: 79.99 },
-  { id: 'soi-102', salesOrderId: 'so-101', partId: 'part-4', quantity: 2, unitPrice: 99.50 },
-  { id: 'soi-103', salesOrderId: 'so-102', partId: 'part-6', quantity: 12, unitPrice: 16.95 },
-  { id: 'soi-104', salesOrderId: 'so-102', partId: 'part-7', quantity: 20, unitPrice: 19.99 },
-  { id: 'soi-105', salesOrderId: 'so-103', partId: 'part-5', quantity: 10, unitPrice: 24.99 },
-  { id: 'soi-106', salesOrderId: 'so-104', partId: 'part-10', quantity: 2, unitPrice: 419.00 },
-  { id: 'soi-107', salesOrderId: 'so-104', partId: 'part-8', quantity: 5, unitPrice: 42.50 },
-  { id: 'soi-108', salesOrderId: 'so-104', partId: 'part-3', quantity: 1, unitPrice: 159.00 },
-  { id: 'soi-109', salesOrderId: 'so-105', partId: 'part-1', quantity: 1, unitPrice: 79.99 },
-  { id: 'soi-110', salesOrderId: 'so-106', partId: 'part-9', quantity: 4, unitPrice: 119.99 },
-  { id: 'soi-111', salesOrderId: 'so-106', partId: 'part-2', quantity: 8, unitPrice: 49.95 },
-  { id: 'soi-112', salesOrderId: 'so-107', partId: 'part-10', quantity: 3, unitPrice: 419.00 },
-  { id: 'soi-113', salesOrderId: 'so-107', partId: 'part-8', quantity: 5, unitPrice: 42.50 },
-  { id: 'soi-114', salesOrderId: 'so-108', partId: 'part-7', quantity: 12, unitPrice: 19.99 },
-  { id: 'soi-115', salesOrderId: 'so-108', partId: 'part-5', quantity: 8, unitPrice: 24.99 },
-  { id: 'soi-116', salesOrderId: 'so-109', partId: 'part-4', quantity: 6, unitPrice: 99.50 },
-  { id: 'soi-117', salesOrderId: 'so-109', partId: 'part-6', quantity: 20, unitPrice: 16.95 },
-  { id: 'soi-118', salesOrderId: 'so-110', partId: 'part-10', quantity: 3, unitPrice: 419.00 },
-  { id: 'soi-119', salesOrderId: 'so-110', partId: 'part-9', quantity: 5, unitPrice: 119.99 },
-  { id: 'soi-120', salesOrderId: 'so-110', partId: 'part-3', quantity: 2, unitPrice: 159.00 },
-  { id: 'soi-121', salesOrderId: 'so-111', partId: 'part-3', quantity: 1, unitPrice: 159.00 },
-  { id: 'soi-122', salesOrderId: 'so-112', partId: 'part-10', quantity: 5, unitPrice: 419.00 },
-  { id: 'soi-123', salesOrderId: 'so-113', partId: 'part-4', quantity: 9, unitPrice: 99.50 },
-  { id: 'soi-124', salesOrderId: 'so-114', partId: 'part-7', quantity: 16, unitPrice: 19.99 },
-  { id: 'soi-125', salesOrderId: 'so-115', partId: 'part-9', quantity: 4, unitPrice: 119.99 },
-  { id: 'soi-126', salesOrderId: 'so-115', partId: 'part-10', quantity: 2, unitPrice: 419.00 },
-  { id: 'soi-127', salesOrderId: 'so-116', partId: 'part-1', quantity: 5, unitPrice: 79.99 },
-  { id: 'soi-128', salesOrderId: 'so-116', partId: 'part-6', quantity: 15, unitPrice: 16.95 },
-  { id: 'soi-129', salesOrderId: 'so-117', partId: 'part-10', quantity: 2, unitPrice: 419.00 },
-  { id: 'soi-130', salesOrderId: 'so-117', partId: 'part-4', quantity: 2, unitPrice: 99.50 },
-  { id: 'soi-131', salesOrderId: 'so-118', partId: 'part-7', quantity: 12, unitPrice: 19.99 },
-  { id: 'soi-132', salesOrderId: 'so-119', partId: 'part-10', quantity: 4, unitPrice: 419.00 },
-  { id: 'soi-133', salesOrderId: 'so-119', partId: 'part-9', quantity: 6, unitPrice: 119.99 },
-  { id: 'soi-134', salesOrderId: 'so-120', partId: 'part-4', quantity: 4, unitPrice: 99.50 },
-  { id: 'soi-135', salesOrderId: 'so-120', partId: 'part-6', quantity: 20, unitPrice: 16.95 },
-  { id: 'soi-136', salesOrderId: 'so-121', partId: 'part-8', quantity: 6, unitPrice: 42.50 },
-  { id: 'soi-137', salesOrderId: 'so-121', partId: 'part-5', quantity: 10, unitPrice: 24.99 },
-  { id: 'soi-138', salesOrderId: 'so-122', partId: 'part-10', quantity: 4, unitPrice: 419.00 },
-  { id: 'soi-139', salesOrderId: 'so-123', partId: 'part-9', quantity: 5, unitPrice: 119.99 },
-  { id: 'soi-140', salesOrderId: 'so-123', partId: 'part-1', quantity: 3, unitPrice: 79.99 },
-  { id: 'soi-141', salesOrderId: 'so-124', partId: 'part-10', quantity: 5, unitPrice: 419.00 },
-  { id: 'soi-142', salesOrderId: 'so-124', partId: 'part-9', quantity: 8, unitPrice: 119.99 },
-  { id: 'soi-143', salesOrderId: 'so-125', partId: 'part-4', quantity: 1, unitPrice: 99.50 },
-  { id: 'soi-144', salesOrderId: 'so-126', partId: 'part-10', quantity: 2, unitPrice: 419.00 },
-  { id: 'soi-145', salesOrderId: 'so-126', partId: 'part-3', quantity: 2, unitPrice: 159.00 },
-  { id: 'soi-146', salesOrderId: 'so-126', partId: 'part-9', quantity: 2, unitPrice: 119.99 },
-  { id: 'soi-147', salesOrderId: 'so-127', partId: 'part-10', quantity: 3, unitPrice: 419.00 },
-  { id: 'soi-148', salesOrderId: 'so-127', partId: 'part-4', quantity: 8, unitPrice: 99.50 },
-  { id: 'soi-149', salesOrderId: 'so-128', partId: 'part-9', quantity: 6, unitPrice: 119.99 },
-  { id: 'soi-150', salesOrderId: 'so-128', partId: 'part-10', quantity: 2, unitPrice: 419.00 },
-  { id: 'soi-151', salesOrderId: 'so-129', partId: 'part-1', quantity: 4, unitPrice: 79.99 },
-  { id: 'soi-152', salesOrderId: 'so-129', partId: 'part-7', quantity: 18, unitPrice: 19.99 },
-  // Current month items
-  { id: 'soi-1', salesOrderId: 'so-201', partId: 'part-1', quantity: 2, unitPrice: 79.99 },
-  { id: 'soi-2', salesOrderId: 'so-201', partId: 'part-4', quantity: 2, unitPrice: 99.50 },
-  { id: 'soi-3', salesOrderId: 'so-202', partId: 'part-10', quantity: 3, unitPrice: 419.00 },
-  { id: 'soi-4', salesOrderId: 'so-202', partId: 'part-8', quantity: 5, unitPrice: 42.50 },
-  { id: 'soi-5', salesOrderId: 'so-203', partId: 'part-1', quantity: 1, unitPrice: 79.99 },
-];
 
 // ─── 12-Month Rich Purchase Order History ─────────────────────────────────────
 export const INITIAL_PURCHASE_ORDERS: PurchaseOrder[] = [
@@ -505,7 +400,6 @@ export const INITIAL_PURCHASE_ORDER_ITEMS: PurchaseOrderItem[] = [
 export const INITIAL_STOCK_MOVEMENTS: StockMovement[] = [
   { id: 'sm-1', partId: 'part-1', type: 'MANUAL_ADJUST', quantity: 6, timestamp: '2026-07-01T10:00:00Z', referenceId: 'MANUAL', notes: 'Initial stock load adjustment' },
   { id: 'sm-2', partId: 'part-1', type: 'PO_RECEIVED', quantity: 10, timestamp: '2026-07-16T15:30:00Z', referenceId: 'po-101', notes: 'Received Restock PO' },
-  { id: 'sm-3', partId: 'part-1', type: 'SALE_DISPATCHED', quantity: -2, timestamp: '2026-07-10T09:15:00Z', referenceId: 'so-201', notes: 'Fulfilled DownTown Moto Workshop order' },
   { id: 'sm-4', partId: 'part-2', type: 'MANUAL_ADJUST', quantity: 4, timestamp: '2026-07-02T11:00:00Z', referenceId: 'MANUAL', notes: 'Stock counting correction' },
   { id: 'sm-5', partId: 'part-9', type: 'MANUAL_ADJUST', quantity: 0, timestamp: '2026-07-03T14:00:00Z', referenceId: 'MANUAL', notes: 'Marked as out of stock' }
 ];
@@ -527,22 +421,7 @@ export const INITIAL_CUSTOMERS: Customer[] = [
 ];
 
 // ─── Phase 4: Returns ────────────────────────────────────────────────────────
-export const INITIAL_RETURNS: Return[] = [
-  {
-    id: 'ret-1',
-    returnNumber: 'RET-2026-00001',
-    originalSalesOrderId: 'so-201',
-    customerId: 'cust-1',
-    customerName: 'DownTown Moto Workshop',
-    items: [{ partId: 'part-1', partName: 'Brembo Sintered Front Brake Pads', quantity: 1, unitPrice: 79.99 }],
-    reason: 'Wrong specification ordered - needed rear pads instead.',
-    type: 'EXCHANGE',
-    status: 'COMPLETED',
-    refundAmount: 79.99,
-    restockItems: true,
-    createdAt: '2026-07-10T14:00:00Z'
-  }
-];
+export const INITIAL_RETURNS: Return[] = [];
 
 // ─── Phase 4: Damaged Stock ───────────────────────────────────────────────────
 export const INITIAL_DAMAGED_STOCK: DamagedStock[] = [
