@@ -98,7 +98,18 @@ function saveLocal(key: string, data: unknown[]): void {
 export class DB {
   // --- Categories ---
   static getCategories(): Category[] {
-    return getOrSeed(KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    const list = getOrSeed(KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    let hasChanges = false;
+    for (const initCat of INITIAL_CATEGORIES) {
+      if (!list.some(c => c.id === initCat.id || c.name.toLowerCase() === initCat.name.toLowerCase())) {
+        list.push(initCat);
+        hasChanges = true;
+      }
+    }
+    if (hasChanges) {
+      this.saveCategories(list);
+    }
+    return list;
   }
   static saveCategories(data: Category[]) {
     save(KEYS.CATEGORIES, data);
@@ -234,6 +245,21 @@ export class DB {
   // --- Parts ---
   static getParts(): Part[] {
     const list = getOrSeed(KEYS.PARTS, INITIAL_PARTS);
+    let hasChanges = false;
+
+    // Auto-merge any newly defined initial parts (e.g. cable catalog)
+    for (const initPart of INITIAL_PARTS) {
+      const exists = list.some(
+        p => p.id === initPart.id || 
+             p.sku.toLowerCase() === initPart.sku.toLowerCase() ||
+             p.name.toLowerCase() === initPart.name.toLowerCase()
+      );
+      if (!exists) {
+        list.push(initPart);
+        hasChanges = true;
+      }
+    }
+
     let migrated = false;
     const migratedList = list.map(p => {
       let isPartOutdated = false;
@@ -267,7 +293,7 @@ export class DB {
       return updated;
     });
 
-    if (migrated) {
+    if (migrated || hasChanges) {
       this.saveParts(migratedList);
       return migratedList;
     }
