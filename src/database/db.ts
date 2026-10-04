@@ -339,6 +339,13 @@ export class DB {
         existing.name = initPart.name;
         existing.description = initPart.description;
         hasChanges = true;
+      } else if (initPart.id.startsWith('spr-')) {
+        if (existing.stockLevel !== initPart.stockLevel || existing.reorderPoint !== initPart.reorderPoint || existing.categoryId !== initPart.categoryId) {
+          existing.stockLevel = initPart.stockLevel;
+          existing.reorderPoint = initPart.reorderPoint;
+          existing.categoryId = initPart.categoryId;
+          hasChanges = true;
+        }
       }
     }
 

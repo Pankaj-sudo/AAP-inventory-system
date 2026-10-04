@@ -93,7 +93,7 @@ export const Inventory: React.FC<InventoryProps> = ({
     wholesalePrice: 0,
     salePrice: 0,
     stockLevel: 0,
-    reorderPoint: 0,
+    reorderPoint: 3,
     maxStock: 50,
     unit: 'Pcs',
     binLocation: '',
@@ -218,7 +218,7 @@ export const Inventory: React.FC<InventoryProps> = ({
       wholesalePrice: 0,
       salePrice: 0,
       stockLevel: 0,
-      reorderPoint: 0,
+      reorderPoint: 3,
       maxStock: 50,
       unit: 'Pcs',
       binLocation: '',
@@ -1230,9 +1230,20 @@ export const Inventory: React.FC<InventoryProps> = ({
             <input
               type="text"
               className="form-input"
-              placeholder="e.g. Brembo Sintered Brake Pads Front"
+              placeholder="e.g. SPRAY - Black, SPRAY - White"
               value={newPartForm.name}
-              onChange={e => setNewPartForm(prev => ({ ...prev, name: e.target.value }))}
+              onChange={e => {
+                const val = e.target.value;
+                setNewPartForm(prev => {
+                  let rp = prev.reorderPoint;
+                  if (/spray.*(black|white)/i.test(val)) {
+                    if (rp === 3 || rp === 0) rp = 5;
+                  } else if (rp === 5 && /spray/i.test(prev.name) && !/spray.*(black|white)/i.test(val)) {
+                    rp = 3;
+                  }
+                  return { ...prev, name: val, reorderPoint: rp };
+                });
+              }}
               autoFocus
               required
             />
@@ -1271,7 +1282,17 @@ export const Inventory: React.FC<InventoryProps> = ({
               <select
                 className="form-select"
                 value={newPartForm.categoryId}
-                onChange={e => setNewPartForm(prev => ({ ...prev, categoryId: e.target.value }))}
+                onChange={e => {
+                  const catId = e.target.value;
+                  const cat = categories.find(c => c.id === catId);
+                  const isSpray = cat && /spray|lube/i.test(cat.name);
+                  setNewPartForm(prev => ({
+                    ...prev,
+                    categoryId: catId,
+                    unit: isSpray ? 'Can' : prev.unit,
+                    brand: isSpray && prev.brand === 'Yamaha' ? 'Universal' : prev.brand
+                  }));
+                }}
                 required
               >
                 <option value="">Select Category</option>
