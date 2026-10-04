@@ -249,13 +249,24 @@ export class DB {
 
     // Auto-merge any newly defined initial parts (e.g. cable catalog)
     for (const initPart of INITIAL_PARTS) {
-      const exists = list.some(
+      const existing = list.find(
         p => p.id === initPart.id || 
              p.sku.toLowerCase() === initPart.sku.toLowerCase() ||
              p.name.toLowerCase() === initPart.name.toLowerCase()
       );
-      if (!exists) {
+      if (!existing) {
         list.push(initPart);
+        hasChanges = true;
+      } else if (initPart.id === 'cab-acc-1' && existing.stockLevel < 29) {
+        existing.stockLevel = 29;
+        existing.name = initPart.name;
+        existing.description = initPart.description;
+        existing.compatibilityIds = initPart.compatibilityIds;
+        hasChanges = true;
+      } else if (initPart.id === 'cab-acc-2' && existing.stockLevel < 10) {
+        existing.stockLevel = 10;
+        existing.name = initPart.name;
+        existing.description = initPart.description;
         hasChanges = true;
       }
     }
