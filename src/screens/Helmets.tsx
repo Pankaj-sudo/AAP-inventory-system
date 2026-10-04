@@ -657,7 +657,7 @@ export const Helmets: React.FC = () => {
                 placeholder="Min Rs." 
                 value={minPrice} 
                 onChange={e => setMinPrice(e.target.value)}
-                className="input"
+                className="form-input"
                 style={{ width: '110px', height: '32px', borderRadius: '9999px', fontSize: '0.8rem', padding: '0 12px' }}
               />
               <span>to</span>
@@ -666,7 +666,7 @@ export const Helmets: React.FC = () => {
                 placeholder="Max Rs." 
                 value={maxPrice} 
                 onChange={e => setMaxPrice(e.target.value)}
-                className="input"
+                className="form-input"
                 style={{ width: '110px', height: '32px', borderRadius: '9999px', fontSize: '0.8rem', padding: '0 12px' }}
               />
               {(minPrice || maxPrice || searchQuery || selectedBrand !== 'ALL' || selectedCategory !== 'ALL' || selectedStatus !== 'ALL') && (

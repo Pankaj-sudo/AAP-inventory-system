@@ -137,16 +137,20 @@ export const App: React.FC = () => {
     <>
       <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       
-      {/* 1. Desktop Sidebar Panel (Velora Luxury Deep Forest Theme) */}
+      {/* 1. Desktop Sidebar Panel (Apple Liquid Glass Theme) */}
       <aside 
         className="app-sidebar"
         style={{ 
           width: '260px', 
           backgroundColor: 'var(--bg-sidebar)', 
+          backdropFilter: 'blur(32px) saturate(190%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(190%)',
+          borderRight: '1px solid var(--border-color)',
           display: 'flex', 
           flexDirection: 'column', 
           flexShrink: 0,
-          color: 'var(--text-sidebar-item)'
+          color: 'var(--text-sidebar-item)',
+          zIndex: 20
         }}
       >
         {/* Brand/Logo */}
@@ -162,14 +166,17 @@ export const App: React.FC = () => {
             style={{ 
               width: '40px', 
               height: '40px', 
-              borderRadius: '8px', 
-              backgroundColor: 'rgba(255,255,255,0.05)', 
+              borderRadius: '12px', 
+              backgroundColor: 'var(--bg-hover)', 
+              border: '1px solid var(--border-color)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              boxShadow: 'var(--shadow-sm)',
               overflow: 'hidden',
-              padding: '2px'
+              padding: '3px'
             }}
           >
             <img 
@@ -179,7 +186,7 @@ export const App: React.FC = () => {
             />
           </div>
           <div>
-            <span className="heading-display" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', display: 'block', letterSpacing: '-0.02em', fontFamily: 'var(--font-display)' }}>
+            <span className="heading-display" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-sidebar-title)', display: 'block', letterSpacing: '-0.02em', fontFamily: 'var(--font-display)' }}>
               Anju Auto Parts
             </span>
             <span style={{ fontSize: '0.65rem', color: 'var(--text-sidebar-sub)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>
@@ -189,7 +196,7 @@ export const App: React.FC = () => {
         </div>
 
         {/* Sidebar Nav items */}
-        <nav style={{ flex: 1, padding: '1rem 1rem', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '1rem 0.85rem', display: 'flex', flexDirection: 'column', gap: '5px', overflowY: 'auto' }}>
           {navItems.map(item => {
             const Icon = item.icon;
             const isActive = currentScreen === item.id;
@@ -204,16 +211,18 @@ export const App: React.FC = () => {
                   padding: '10px 16px',
                   borderRadius: '9999px',
                   fontSize: '13.5px',
-                  fontWeight: isActive ? 700 : 500,
+                  fontWeight: isActive ? 600 : 500,
                   letterSpacing: '-0.01em',
                   transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
                   background: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
                   color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)',
-                  boxShadow: isActive ? '0 4px 18px rgba(139, 92, 246, 0.4)' : 'none',
-                  border: 'none',
+                  boxShadow: isActive ? '0 2px 10px var(--color-brand-glow)' : 'none',
+                  border: isActive ? '1px solid var(--border-color)' : '1px solid transparent',
+                  backdropFilter: isActive ? 'blur(16px)' : 'none',
+                  WebkitBackdropFilter: isActive ? 'blur(16px)' : 'none',
                 }}
               >
-                <Icon size={17} color={isActive ? 'var(--text-sidebar-active)' : 'currentColor'} />
+                <Icon size={17} color={isActive ? 'var(--color-brand)' : 'currentColor'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -224,11 +233,13 @@ export const App: React.FC = () => {
         <div style={{ padding: '1rem' }}>
           <div
             style={{
-              padding: '1.15rem 1rem',
+              padding: '1rem',
               borderRadius: '16px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              backdropFilter: 'blur(10px)',
+              backgroundColor: 'var(--bg-hover)',
+              border: '1px solid var(--border-color)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              boxShadow: 'var(--shadow-sm)',
               position: 'relative',
               overflow: 'hidden'
             }}
@@ -239,20 +250,21 @@ export const App: React.FC = () => {
                   width: '32px', 
                   height: '32px', 
                   borderRadius: '50%', 
-                  backgroundColor: '#E52326', 
+                  backgroundColor: 'var(--color-brand)', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
                   fontWeight: 800,
                   fontSize: '0.75rem',
                   color: '#ffffff',
-                  boxShadow: '0 2px 8px rgba(229,35,38,0.3)'
+                  boxShadow: '0 2px 8px var(--color-brand-glow)',
+                  border: '1px solid rgba(255,255,255,0.2)'
                 }}
               >
                 AAP
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Anju Auto Parts</span>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Anju Auto Parts</span>
                 <span style={{ fontSize: '0.625rem', color: 'var(--text-sidebar-sub)' }}>Executive Inventory</span>
               </div>
             </div>
@@ -269,19 +281,25 @@ export const App: React.FC = () => {
           <aside 
             className="mobile-nav-drawer"
             onClick={e => e.stopPropagation()}
-            style={{ backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-sidebar-item)' }}
+            style={{ 
+              backgroundColor: 'var(--bg-sidebar)', 
+              color: 'var(--text-sidebar-item)',
+              backdropFilter: 'blur(32px) saturate(190%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(190%)',
+              borderRight: '1px solid var(--border-color)'
+            }}
           >
-            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2px' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'var(--bg-hover)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2px' }}>
                   <img src="/logo.png" alt="AAP Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 </div>
                 <div>
-                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#ffffff', display: 'block', fontFamily: 'var(--font-display)' }}>Anju Auto Parts</span>
+                  <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-sidebar-title)', display: 'block', fontFamily: 'var(--font-display)' }}>Anju Auto Parts</span>
                   <span style={{ fontSize: '0.65rem', color: 'var(--text-sidebar-sub)' }}>Beltar, Udayapur</span>
                 </div>
               </div>
-              <button onClick={() => setIsMobileNavOpen(false)} className="btn btn-ghost" style={{ padding: '6px', color: '#ffffff' }}>
+              <button onClick={() => setIsMobileNavOpen(false)} className="btn btn-ghost" style={{ padding: '6px', color: 'var(--text-primary)' }}>
                 <X size={20} />
               </button>
             </div>
@@ -301,12 +319,14 @@ export const App: React.FC = () => {
                       padding: '12px 16px',
                       borderRadius: '9999px',
                       fontSize: '14px',
-                      fontWeight: isActive ? 700 : 500,
+                      fontWeight: isActive ? 600 : 500,
                       backgroundColor: isActive ? 'var(--bg-sidebar-active)' : 'transparent',
-                      color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)'
+                      color: isActive ? 'var(--text-sidebar-active)' : 'var(--text-sidebar-item)',
+                      border: isActive ? '1px solid var(--border-color)' : 'none',
+                      boxShadow: isActive ? '0 2px 8px var(--color-brand-glow)' : 'none'
                     }}
                   >
-                    <Icon size={18} color={isActive ? 'var(--text-sidebar-active)' : 'currentColor'} />
+                    <Icon size={18} color={isActive ? 'var(--color-brand)' : 'currentColor'} />
                     <span>{item.label}</span>
                   </button>
                 );
@@ -324,7 +344,10 @@ export const App: React.FC = () => {
           className="app-header"
           style={{ 
             height: '72px', 
-            backgroundColor: 'var(--bg-app)', 
+            backgroundColor: 'transparent', 
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid var(--border-subtle)',
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between', 
@@ -353,14 +376,17 @@ export const App: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 width: '100%',
-                padding: '9px 14px',
+                padding: '9px 16px',
                 borderRadius: '9999px',
                 border: '1px solid var(--border-color)',
                 backgroundColor: 'var(--bg-card)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
                 color: 'var(--text-tertiary)',
                 fontSize: '13px',
                 cursor: 'pointer',
-                transition: 'border-color 150ms ease',
+                transition: 'all 150ms ease',
+                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.06)'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -404,8 +430,11 @@ export const App: React.FC = () => {
                 color: 'var(--text-secondary)',
                 border: '1px solid var(--border-color)',
                 backgroundColor: 'var(--bg-card)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)'
               }}
-              title={isDarkMode ? 'Switch to Light Luxury Theme' : 'Switch to Midnight Dark Theme'}
+              title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Apple Liquid Glass Dark Theme'}
             >
               {isDarkMode ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} />}
             </button>

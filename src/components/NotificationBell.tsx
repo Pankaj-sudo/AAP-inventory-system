@@ -206,7 +206,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ onNavigate }
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <span style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-primary)' }}>{n.title}</span>
-                      <span style={{ fontSize: '0.62rem', color: 'var(--text-tertiary)' }}>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
                         {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

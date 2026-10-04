@@ -334,7 +334,7 @@ export const Inventory: React.FC<InventoryProps> = ({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
         <div className="card" style={{ padding: '0.875rem 1.25rem', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '0.725rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>📦 Total Parts</span>
+            <span style={{ fontSize: '0.725rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>📦 Total Parts</span>
             <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', fontFeatureSettings: "'tnum'", marginTop: '2px' }}>
               {stats.totalParts.toLocaleString()}
             </div>
@@ -344,7 +344,7 @@ export const Inventory: React.FC<InventoryProps> = ({
 
         <div className="card" style={{ padding: '0.875rem 1.25rem', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '0.725rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>⚠️ Low Stock</span>
+            <span style={{ fontSize: '0.725rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>⚠️ Low Stock</span>
             <div style={{ fontSize: '1.35rem', fontWeight: 700, color: stats.lowStockCount > 0 ? '#ea580c' : 'var(--text-primary)', fontFamily: 'var(--font-display)', fontFeatureSettings: "'tnum'", marginTop: '2px' }}>
               {stats.lowStockCount}
             </div>
@@ -354,17 +354,17 @@ export const Inventory: React.FC<InventoryProps> = ({
 
         <div className="card" style={{ padding: '0.875rem 1.25rem', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '0.725rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>💰 Inventory Value</span>
+            <span style={{ fontSize: '0.725rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>💰 Inventory Value</span>
             <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', fontFeatureSettings: "'tnum'", marginTop: '2px' }}>
               Rs. {stats.totalStockValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </div>
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>At cost</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>At cost</span>
         </div>
 
         <div className="card" style={{ padding: '0.875rem 1.25rem', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '0.725rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>🟢 In Stock</span>
+            <span style={{ fontSize: '0.725rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>🟢 In Stock</span>
             <div style={{ fontSize: '1.35rem', fontWeight: 700, color: '#16a34a', fontFamily: 'var(--font-display)', fontFeatureSettings: "'tnum'", marginTop: '2px' }}>
               {totalStockUnits.toLocaleString()}
             </div>
@@ -575,9 +575,9 @@ export const Inventory: React.FC<InventoryProps> = ({
                   style={{ cursor: 'pointer' }}
                   title="Double-click to edit Wholesale Price"
                 >
-                  <div style={{ fontSize: '0.8125rem', color: '#64748b', fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Cost: Rs. {row.costPrice.toFixed(2)}</div>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Cost: Rs. {row.costPrice.toFixed(2)}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>W/S:</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>W/S:</span>
                     {isEditingWholesale ? (
                       <input
                         type="text"

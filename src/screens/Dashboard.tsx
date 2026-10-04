@@ -191,7 +191,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', paddingBottom: '2.5rem' }}>
 
-      {/* ── Velora Page Header Greeting ── */}
+      {/* ── Page Header Greeting (Apple Liquid Glass Accent) ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 
@@ -201,7 +201,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
               fontWeight: 700, 
               margin: 0, 
               color: 'var(--text-primary)', 
-              letterSpacing: '-0.025em', 
+              letterSpacing: '-0.03em', 
               lineHeight: 1.2,
               fontFamily: 'var(--font-display)' 
             }}
@@ -214,32 +214,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button 
-            className="btn" 
+            className="btn btn-secondary" 
             style={{ 
               fontSize: '0.85rem', 
               fontWeight: 600, 
-              padding: '10px 18px', 
+              padding: '9px 18px', 
               borderRadius: '9999px',
-              backgroundColor: 'var(--bg-panel)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-primary)',
-              boxShadow: 'var(--shadow-sm)'
             }} 
             onClick={() => onTriggerAction('create-po')}
           >
             <ShoppingCart size={15} /> Create PO
           </button>
           <button 
-            className="btn" 
+            className="btn btn-primary" 
             style={{ 
               fontSize: '0.85rem', 
-              fontWeight: 700, 
-              padding: '10px 20px', 
+              fontWeight: 600, 
+              padding: '9px 20px', 
               borderRadius: '9999px',
-              backgroundColor: '#13352f',
-              color: '#f6ddd6',
-              border: 'none',
-              boxShadow: '0 4px 14px rgba(19,53,47,0.2)'
             }} 
             onClick={() => onTriggerAction('create-sales')}
           >
@@ -248,57 +240,57 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
         </div>
       </div>
 
-      {/* ── 3-Card Hero Banner Section (Exact Match to User Reference Image) ── */}
+      {/* ── 3-Card Hero Banner Section (Apple Adaptive Liquid Glass) ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
         
-        {/* Hero Card 1: Total Revenue (Deep Dark Forest Teal #0c2f25) */}
+        {/* Hero Card 1: Total Revenue (Emerald Theme) */}
         <div
-          style={{
-            backgroundColor: '#0c2f25',
-            color: '#ffffff',
-            borderRadius: '24px',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 12px 32px rgba(12,47,37,0.3)',
-            minHeight: '230px'
-          }}
+          className="liquid-hero-card hero-card-emerald"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div 
               style={{ 
                 width: '38px', height: '38px', borderRadius: '12px', 
-                backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', 
-                alignItems: 'center', justifyContent: 'center', color: '#f6ddd6', fontWeight: 800 
+                backgroundColor: 'var(--color-success-bg)', 
+                border: '1px solid var(--color-success-border)',
+                backdropFilter: 'blur(10px)',
+                display: 'flex', 
+                alignItems: 'center', justifyContent: 'center', color: 'var(--color-success)', fontWeight: 800 
               }}
             >
               M
             </div>
-            <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(255,255,255,0.12)', padding: '4px 12px', borderRadius: '9999px', color: '#e2edea', fontWeight: 600 }}>
+            <span style={{ 
+              fontSize: '0.75rem', 
+              backgroundColor: 'var(--bg-hover)', 
+              border: '1px solid var(--border-color)',
+              backdropFilter: 'blur(10px)',
+              padding: '4px 12px', 
+              borderRadius: '9999px', 
+              color: 'var(--text-secondary)', 
+              fontWeight: 600 
+            }}>
               This Month ∨
             </span>
           </div>
 
           <div style={{ marginTop: '1.25rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#9ebab3', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>TOTAL REVENUE</span>
-            <div style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em', marginTop: '4px', fontVariantNumeric: 'tabular-nums', color: '#ffffff' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>TOTAL REVENUE</span>
+            <div style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em', marginTop: '4px', fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>
               Rs {revenueKPIs.monthlyRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#34d399', marginTop: '4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '0.78rem', color: 'var(--color-success)', marginTop: '4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
               <ArrowUpRight size={14} /> 16.2% from last month
             </div>
           </div>
 
-          {/* Decorative Sparkline Wave */}
+          {/* Decorative Sparkline Wave with liquid glow */}
           <svg style={{ position: 'absolute', right: 0, bottom: 0, width: '100%', height: '70px', opacity: 0.25, pointerEvents: 'none' }} viewBox="0 0 300 70" preserveAspectRatio="none">
             <path d="M0,50 Q60,10 120,40 T240,20 T300,35 L300,70 L0,70 Z" fill="url(#heroGrad)" />
             <defs>
               <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#f6ddd6" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#0c2f25" stopOpacity="0" />
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
               </linearGradient>
             </defs>
           </svg>
@@ -306,19 +298,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
           <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 1 }}>
             <button
               onClick={() => onNavigate('analytics')}
+              className="btn btn-secondary"
               style={{
-                backgroundColor: '#fce8e1',
-                color: '#0c2f25',
-                border: 'none',
                 padding: '8px 18px',
                 borderRadius: '9999px',
                 fontSize: '0.8rem',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
               }}
             >
               View Report →
@@ -326,63 +315,58 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
           </div>
         </div>
 
-        {/* Hero Card 2: Soft Warm Peach Campaign Hero Card */}
+        {/* Hero Card 2: Monsoon Stocking Campaign Card */}
         <div
-          style={{
-            background: 'linear-gradient(135deg, #fcedea 0%, #f7ded7 100%)',
-            color: '#13352f',
-            borderRadius: '24px',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 10px 28px rgba(246,221,214,0.3)',
-            border: '1px solid rgba(255,255,255,0.6)',
-            minHeight: '230px'
-          }}
+          className="liquid-hero-card hero-card-aurora"
         >
           <div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#8c6b63', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               CURRENTLY RUNNING
             </span>
-            <h2 style={{ fontSize: '1.45rem', fontWeight: 700, fontFamily: 'var(--font-display)', margin: '4px 0 0 0', color: '#13352f' }}>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 700, fontFamily: 'var(--font-sans)', margin: '4px 0 0 0', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Monsoon Season Stocking 🌸
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '1rem', backgroundColor: 'rgba(255,255,255,0.65)', padding: '12px', borderRadius: '16px', backdropFilter: 'blur(8px)' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(3, 1fr)', 
+            gap: '10px', 
+            marginTop: '1rem', 
+            backgroundColor: 'var(--bg-hover)', 
+            border: '1px solid var(--border-color)',
+            padding: '12px', 
+            borderRadius: '16px', 
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)'
+          }}>
             <div>
-              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>BUDGET</span>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>Rs 1.2L</div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>BUDGET</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>Rs 1.2L</div>
             </div>
             <div>
-              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>PROGRESS</span>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>68%</div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>PROGRESS</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-brand-coral)', marginTop: '2px' }}>68%</div>
             </div>
             <div>
-              <span style={{ fontSize: '0.65rem', color: '#7a5e57', fontWeight: 600, textTransform: 'uppercase' }}>ITEMS</span>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#13352f', marginTop: '2px' }}>{inventoryKPIs.totalProducts} Pcs</div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>ITEMS</span>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{inventoryKPIs.totalProducts} Pcs</div>
             </div>
           </div>
 
           <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <button
               onClick={() => onNavigate('inventory')}
+              className="btn btn-secondary"
               style={{
-                backgroundColor: '#ffffff',
-                color: '#13352f',
-                border: 'none',
                 padding: '8px 18px',
                 borderRadius: '9999px',
                 fontSize: '0.8rem',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 4px 12px rgba(19,53,47,0.08)'
               }}
             >
               View Inventory →
@@ -390,35 +374,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
           </div>
         </div>
 
-        {/* Hero Card 3: July 2026 Calendar & Schedule Widget (Soft Crisp White Card) */}
+        {/* Hero Card 3: July 2026 Calendar & Schedule Widget */}
         <div
-          style={{
-            backgroundColor: '#ffffff',
-            color: '#111827',
-            borderRadius: '24px',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-            border: '1px solid rgba(255,255,255,0.8)',
-            minHeight: '230px'
-          }}
+          className="liquid-hero-card hero-card-sapphire"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', fontFamily: 'var(--font-sans)' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.01em' }}>
               July 2026
             </span>
             <div style={{ display: 'flex', gap: '6px' }}>
-              <span style={{ fontSize: '0.75rem', cursor: 'pointer', padding: '3px 9px', borderRadius: '50%', backgroundColor: '#0c2f25', color: '#ffffff', fontWeight: 700 }}>‹</span>
-              <span style={{ fontSize: '0.75rem', cursor: 'pointer', padding: '3px 9px', borderRadius: '50%', backgroundColor: '#0c2f25', color: '#ffffff', fontWeight: 700 }}>›</span>
+              <button className="btn btn-secondary" style={{ fontSize: '0.75rem', cursor: 'pointer', width: '26px', height: '26px', padding: 0, borderRadius: '50%', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</button>
+              <button className="btn btn-secondary" style={{ fontSize: '0.75rem', cursor: 'pointer', width: '26px', height: '26px', padding: 0, borderRadius: '50%', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>›</button>
             </div>
           </div>
 
           {/* Date Strip */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', marginTop: '0.75rem' }}>
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-              <span key={day} style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 600 }}>{day}</span>
+              <span key={day} style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 700 }}>{day}</span>
             ))}
             {[18, 19, 20, 21, 22, 23, 24].map((date) => {
               const isToday = date === 22;
@@ -428,17 +401,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
                   style={{
                     padding: '6px 0',
                     fontSize: '0.8rem',
-                    fontWeight: isToday ? 800 : 600,
+                    fontWeight: isToday ? 700 : 500,
                     borderRadius: '50%',
-                    backgroundColor: isToday ? '#0c2f25' : 'transparent',
-                    color: isToday ? '#ffffff' : '#111827',
+                    backgroundColor: isToday ? 'var(--color-brand)' : 'transparent',
+                    color: isToday ? '#ffffff' : 'var(--text-primary)',
                     margin: '2px auto',
                     width: '28px',
                     height: '28px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: isToday ? '0 4px 10px rgba(12,47,37,0.35)' : 'none'
+                    boxShadow: isToday ? '0 0 12px var(--color-brand-glow)' : 'none',
+                    border: isToday ? '1px solid var(--color-brand)' : '1px solid transparent'
                   }}
                 >
                   {date}
@@ -448,24 +422,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
           </div>
 
           {/* Schedule Preview */}
-          <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid #e5e7eb', paddingTop: '0.75rem' }}>
+          <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-              <span style={{ color: '#6b7280', fontWeight: 600 }}>10:00 AM</span>
-              <span style={{ color: '#111827', fontWeight: 700 }}>Supplier Stock Audit</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>10:00 AM</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Supplier Stock Audit</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-              <span style={{ color: '#6b7280', fontWeight: 600 }}>02:30 PM</span>
-              <span style={{ color: '#111827', fontWeight: 700 }}>Weekly Margin Review</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>02:30 PM</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Weekly Margin Review</span>
             </div>
           </div>
         </div>
 
       </div>
 
-      {/* ── Quick Action Bar (5 Action Pills in Dark Container) ── */}
+      {/* ── Quick Action Dock (5 Liquid Glass Action Pills) ── */}
       <div 
         style={{ 
           backgroundColor: 'var(--bg-panel)', 
+          backdropFilter: 'blur(28px) saturate(190%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(190%)',
           borderRadius: '24px', 
           padding: '1.25rem 1.5rem', 
           display: 'grid', 
@@ -477,12 +453,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
       >
         <button
           onClick={() => onTriggerAction('add-part')}
+          className="liquid-action-pill"
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-            background: 'none', border: 'none', cursor: 'pointer'
+            background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'transform 150ms ease'
           }}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: 'rgba(255, 71, 105, 0.15)', color: '#ff4769', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(255,71,105,0.2)' }}>
+          <div style={{ 
+            width: '48px', height: '48px', borderRadius: '16px', 
+            backgroundColor: 'rgba(255, 55, 95, 0.15)', 
+            color: '#ff375f', 
+            border: '1px solid rgba(255, 55, 95, 0.3)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            boxShadow: '0 4px 16px rgba(255,55,95,0.25), inset 0 1px 0 rgba(255,255,255,0.2)' 
+          }}>
             <Package size={22} />
           </div>
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>+ Add Part</span>
@@ -490,12 +477,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
 
         <button
           onClick={() => onNavigate('customers')}
+          className="liquid-action-pill"
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-            background: 'none', border: 'none', cursor: 'pointer'
+            background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'transform 150ms ease'
           }}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(16,185,129,0.2)' }}>
+          <div style={{ 
+            width: '48px', height: '48px', borderRadius: '16px', 
+            backgroundColor: 'rgba(48, 209, 88, 0.15)', 
+            color: '#30d158', 
+            border: '1px solid rgba(48, 209, 88, 0.3)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            boxShadow: '0 4px 16px rgba(48,209,88,0.25), inset 0 1px 0 rgba(255,255,255,0.2)' 
+          }}>
             <Coins size={22} />
           </div>
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Add Client</span>
@@ -503,12 +501,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
 
         <button
           onClick={() => onTriggerAction('create-sales')}
+          className="liquid-action-pill"
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-            background: 'none', border: 'none', cursor: 'pointer'
+            background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'transform 150ms ease'
           }}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(59,130,246,0.2)' }}>
+          <div style={{ 
+            width: '48px', height: '48px', borderRadius: '16px', 
+            backgroundColor: 'rgba(0, 113, 227, 0.18)', 
+            color: '#2997ff', 
+            border: '1px solid rgba(41, 151, 255, 0.35)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            boxShadow: '0 4px 16px rgba(0,113,227,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' 
+          }}>
             <ShoppingBag size={22} />
           </div>
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>New Invoice</span>
@@ -516,12 +525,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
 
         <button
           onClick={() => onNavigate('invoices')}
+          className="liquid-action-pill"
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-            background: 'none', border: 'none', cursor: 'pointer'
+            background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'transform 150ms ease'
           }}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(168,85,247,0.2)' }}>
+          <div style={{ 
+            width: '48px', height: '48px', borderRadius: '16px', 
+            backgroundColor: 'rgba(191, 90, 242, 0.15)', 
+            color: '#bf5af2', 
+            border: '1px solid rgba(191, 90, 242, 0.3)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            boxShadow: '0 4px 16px rgba(191,90,242,0.25), inset 0 1px 0 rgba(255,255,255,0.2)' 
+          }}>
             <BarChart2 size={22} />
           </div>
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Invoices</span>
@@ -529,12 +549,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
 
         <button
           onClick={() => onNavigate('analytics')}
+          className="liquid-action-pill"
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-            background: 'none', border: 'none', cursor: 'pointer'
+            background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'transform 150ms ease'
           }}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '16px', backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(245,158,11,0.2)' }}>
+          <div style={{ 
+            width: '48px', height: '48px', borderRadius: '16px', 
+            backgroundColor: 'rgba(255, 159, 10, 0.15)', 
+            color: '#ff9f0a', 
+            border: '1px solid rgba(255, 159, 10, 0.3)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            boxShadow: '0 4px 16px rgba(255,159,10,0.25), inset 0 1px 0 rgba(255,255,255,0.2)' 
+          }}>
             <TrendingUp size={22} />
           </div>
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>Analytics</span>

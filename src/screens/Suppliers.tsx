@@ -4,6 +4,7 @@ import { useInventory } from '../hooks/useInventory';
 import { Table } from '../components/Table';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
+import { Trash2 } from 'lucide-react';
 
 interface SuppliersProps {
   isOpenAddPOModal: boolean;
@@ -20,7 +21,8 @@ export const Suppliers: React.FC<SuppliersProps> = ({
     createOrder,
     updateOrderStatus,
     getItemsForOrder,
-    addSupplier
+    addSupplier,
+    deleteSupplier
   } = usePurchaseOrders();
 
   const { allPartsRaw } = useInventory();
@@ -55,7 +57,24 @@ export const Suppliers: React.FC<SuppliersProps> = ({
         items: []
       });
     }
-  }, [isOpenAddPOModal, suppliers]);
+  }, [isOpenAddPOModal, suppliers, newPOForm.supplierId]);
+
+  const handleDeleteSupplier = (id: string, name: string) => {
+    const itemsSupplied = allPartsRaw.filter(p => p.supplierId === id).length;
+    const poCount = purchaseOrders.filter(po => po.supplierId === id).length;
+
+    let confirmMsg = `Are you sure you want to delete supplier "${name}"?`;
+    if (itemsSupplied > 0 || poCount > 0) {
+      confirmMsg += `\n\nWarning: This supplier is currently associated with ${itemsSupplied} catalogued part(s) and ${poCount} purchase order(s).`;
+    }
+
+    if (window.confirm(confirmMsg)) {
+      deleteSupplier(id);
+      if (selectedSupplierId === id) {
+        setSelectedSupplierId(null);
+      }
+    }
+  };
 
   // Filter parts based on selected supplier in PO
   const availablePartsForSupplier = useMemo(() => {
@@ -180,48 +199,100 @@ export const Suppliers: React.FC<SuppliersProps> = ({
         {/* Left Column: Suppliers Directory */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Suppliers Directory</h3>
-          {suppliers.map(sup => {
-            const isActive = selectedSupplierId === sup.id;
-            const itemsSupplied = allPartsRaw.filter(p => p.supplierId === sup.id).length;
-            const openOrders = purchaseOrders.filter(po => po.supplierId === sup.id && po.status === 'SENT').length;
+          {suppliers.length === 0 ? (
+            <div className="card" style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              No suppliers found. Click "Add Supplier" to create one.
+            </div>
+          ) : (
+            suppliers.map(sup => {
+              const isActive = selectedSupplierId === sup.id;
+              const itemsSupplied = allPartsRaw.filter(p => p.supplierId === sup.id).length;
+              const openOrders = purchaseOrders.filter(po => po.supplierId === sup.id && po.status === 'SENT').length;
 
-            return (
-              <div
-                key={sup.id}
-                onClick={() => setSelectedSupplierId(isActive ? null : sup.id)}
-                className="card"
-                style={{
-                  cursor: 'pointer',
-                  borderColor: isActive ? 'var(--color-brand)' : 'var(--border-color)',
-                  backgroundColor: isActive ? 'var(--color-brand-glow)' : 'var(--bg-panel)',
-                  padding: '1rem',
-                  gap: '4px'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{sup.name}</div>
-                  <span className="badge badge-secondary" style={{ fontSize: '0.65rem' }}>{sup.leadTimeDays}d lead</span>
+              return (
+                <div
+                  key={sup.id}
+                  onClick={() => setSelectedSupplierId(isActive ? null : sup.id)}
+                  className="card"
+                  style={{
+                    cursor: 'pointer',
+                    borderColor: isActive ? 'var(--color-brand)' : 'var(--border-color)',
+                    backgroundColor: isActive ? 'var(--color-brand-glow)' : 'var(--bg-panel)',
+                    padding: '1rem',
+                    gap: '4px',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-word' }}>{sup.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                      <span className="badge badge-secondary" style={{ fontSize: '0.65rem' }}>{sup.leadTimeDays}d lead</span>
+                      <button
+                        type="button"
+                        title={`Delete ${sup.name}`}
+                        aria-label={`Delete ${sup.name}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteSupplier(sup.id, sup.name);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--text-tertiary)',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          borderRadius: '6px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'color 0.15s, background-color 0.15s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-danger, #ef4444)';
+                          e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.12)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--text-tertiary)';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Contact: {sup.contactPerson}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Phone: {sup.phone}</div>
+                  
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '6px', fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
+                    <span>{itemsSupplied} Parts catalogued</span>
+                    <span>•</span>
+                    <span style={{ color: openOrders > 0 ? 'var(--color-warning)' : 'inherit', fontWeight: openOrders > 0 ? 600 : 400 }}>
+                      {openOrders} pending restocks
+                    </span>
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Contact: {sup.contactPerson}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Phone: {sup.phone}</div>
-                
-                <div style={{ display: 'flex', gap: '8px', marginTop: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '6px', fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
-                  <span>{itemsSupplied} Parts catalogued</span>
-                  <span>•</span>
-                  <span style={{ color: openOrders > 0 ? 'var(--color-warning)' : 'inherit', fontWeight: openOrders > 0 ? 600 : 400 }}>
-                    {openOrders} pending restocks
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Right Column: Dynamic View (Global POs or Supplier Specific POs) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-            {activeSupplier ? `${activeSupplier.name} Purchase History` : 'Global Restock Ledger'}
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)', margin: 0 }}>
+              {activeSupplier ? `${activeSupplier.name} Purchase History` : 'Global Restock Ledger'}
+            </h3>
+            {activeSupplier && (
+              <Button
+                variant="danger"
+                size="sm"
+                icon={<Trash2 size={14} />}
+                onClick={() => handleDeleteSupplier(activeSupplier.id, activeSupplier.name)}
+              >
+                Delete Supplier
+              </Button>
+            )}
+          </div>
 
           <Table
             columns={[

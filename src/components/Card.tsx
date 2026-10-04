@@ -43,7 +43,7 @@ export const Card: React.FC<CardProps> = ({
                 {trendType === 'up' ? '↑' : '↓'} {trend}
               </span>
             )}
-            {meta && <span style={{ color: 'var(--text-tertiary)' }}>{meta}</span>}
+            {meta && <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{meta}</span>}
           </div>
         )}
       </div>
