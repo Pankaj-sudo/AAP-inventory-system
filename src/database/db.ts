@@ -39,17 +39,76 @@ const KEYS = {
 };
 
 // ── Data Version: bump this to force a reseed on all browsers ──────────────
-const DATA_VERSION = '7.1'; // 3x3 Catalogue Grid Layout & 9 Helmet Products
+const DATA_VERSION = '7.2'; // Purge template demo parts & clean inventory
 const VERSION_KEY = 'inv_data_version';
 const SHEET_URL_KEY = 'inv_google_sheet_url';
 
 (function ensureFreshSeed() {
   const stored = localStorage.getItem(VERSION_KEY);
   if (stored !== DATA_VERSION) {
-    // Clear all old data so mock data reseeds with Phase 3 history
-    Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+    try {
+      // Purge template demo parts (part-1 through part-10) while preserving user-created parts
+      const partsRaw = localStorage.getItem(KEYS.PARTS);
+      if (partsRaw) {
+        const parts = JSON.parse(partsRaw);
+        if (Array.isArray(parts)) {
+          const cleanedParts = parts.filter((p: any) => !/^part-([1-9]|10)$/.test(p.id));
+          localStorage.setItem(KEYS.PARTS, JSON.stringify(cleanedParts));
+        }
+      }
+
+      // Purge demo purchase orders and items
+      const poRaw = localStorage.getItem(KEYS.PURCHASE_ORDERS);
+      if (poRaw) {
+        const pos = JSON.parse(poRaw);
+        if (Array.isArray(pos)) {
+          const cleanedPOs = pos.filter((po: any) => !/^po-[1-9]$/.test(po.id));
+          localStorage.setItem(KEYS.PURCHASE_ORDERS, JSON.stringify(cleanedPOs));
+        }
+      }
+      const poiRaw = localStorage.getItem(KEYS.PURCHASE_ORDER_ITEMS);
+      if (poiRaw) {
+        const pois = JSON.parse(poiRaw);
+        if (Array.isArray(pois)) {
+          const cleanedPOIs = pois.filter((poi: any) => !/^poi-[1-9]$/.test(poi.id) && !/^part-([1-9]|10)$/.test(poi.partId));
+          localStorage.setItem(KEYS.PURCHASE_ORDER_ITEMS, JSON.stringify(cleanedPOIs));
+        }
+      }
+
+      // Purge demo movements and history logs referencing demo parts
+      const smRaw = localStorage.getItem(KEYS.STOCK_MOVEMENTS);
+      if (smRaw) {
+        const sms = JSON.parse(smRaw);
+        if (Array.isArray(sms)) {
+          const cleanedSMs = sms.filter((sm: any) => !/^part-([1-9]|10)$/.test(sm.partId));
+          localStorage.setItem(KEYS.STOCK_MOVEMENTS, JSON.stringify(cleanedSMs));
+        }
+      }
+      const hlRaw = localStorage.getItem(KEYS.HISTORY_LOGS);
+      if (hlRaw) {
+        const hls = JSON.parse(hlRaw);
+        if (Array.isArray(hls)) {
+          const cleanedHLs = hls.filter((hl: any) => !/^part-([1-9]|10)$/.test(hl.partId));
+          localStorage.setItem(KEYS.HISTORY_LOGS, JSON.stringify(cleanedHLs));
+        }
+      }
+
+      // Purge demo notifications
+      const notifRaw = localStorage.getItem(KEYS.NOTIFICATIONS);
+      if (notifRaw) {
+        const notifs = JSON.parse(notifRaw);
+        if (Array.isArray(notifs)) {
+          const cleanedNotifs = notifs.filter((n: any) => !/^notif-[1-7]$/.test(n.id) && !n.message?.includes('Brembo'));
+          localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(cleanedNotifs));
+        }
+      }
+    } catch (e) {
+      console.warn('[DB] Migration cleanup notice:', e);
+    }
     localStorage.setItem(VERSION_KEY, DATA_VERSION);
-    localStorage.setItem(SHEET_URL_KEY, 'https://script.google.com/macros/s/AKfycbywTDidj9kH4D2yZUbIiIIiYVZujsqKiqO-UQhCoO6buMc5Mo3_lBLkXAu8xX6eEztiPA/exec');
+    if (!localStorage.getItem(SHEET_URL_KEY)) {
+      localStorage.setItem(SHEET_URL_KEY, 'https://script.google.com/macros/s/AKfycbywTDidj9kH4D2yZUbIiIIiYVZujsqKiqO-UQhCoO6buMc5Mo3_lBLkXAu8xX6eEztiPA/exec');
+    }
   } else if (!localStorage.getItem(SHEET_URL_KEY)) {
     localStorage.setItem(SHEET_URL_KEY, 'https://script.google.com/macros/s/AKfycbywTDidj9kH4D2yZUbIiIIiYVZujsqKiqO-UQhCoO6buMc5Mo3_lBLkXAu8xX6eEztiPA/exec');
   }
@@ -200,7 +259,12 @@ export class DB {
 
   // --- Stock Movements ---
   static getStockMovements(): StockMovement[] {
-    return getOrSeed(KEYS.STOCK_MOVEMENTS, INITIAL_STOCK_MOVEMENTS);
+    const rawList = getOrSeed(KEYS.STOCK_MOVEMENTS, INITIAL_STOCK_MOVEMENTS);
+    const list = rawList.filter(sm => !/^part-([1-9]|10)$/.test(sm.partId));
+    if (list.length !== rawList.length) {
+      save(KEYS.STOCK_MOVEMENTS, list);
+    }
+    return list;
   }
   static saveStockMovements(data: StockMovement[]) {
     save(KEYS.STOCK_MOVEMENTS, data);
@@ -223,7 +287,12 @@ export class DB {
 
   // --- Product Edit History Logs ---
   static getHistoryLogs(): ProductHistoryLog[] {
-    return getOrSeed(KEYS.HISTORY_LOGS, INITIAL_HISTORY_LOGS);
+    const rawList = getOrSeed(KEYS.HISTORY_LOGS, INITIAL_HISTORY_LOGS);
+    const list = rawList.filter(hl => !/^part-([1-9]|10)$/.test(hl.partId));
+    if (list.length !== rawList.length) {
+      save(KEYS.HISTORY_LOGS, list);
+    }
+    return list;
   }
   static saveHistoryLogs(data: ProductHistoryLog[]) {
     save(KEYS.HISTORY_LOGS, data);
@@ -244,8 +313,10 @@ export class DB {
 
   // --- Parts ---
   static getParts(): Part[] {
-    const list = getOrSeed(KEYS.PARTS, INITIAL_PARTS);
-    let hasChanges = false;
+    const rawList = getOrSeed(KEYS.PARTS, INITIAL_PARTS);
+    // Purge any template demo parts (part-1 through part-10) that were seeded originally
+    const list = rawList.filter(p => !/^part-([1-9]|10)$/.test(p.id));
+    let hasChanges = list.length !== rawList.length;
 
     // Auto-merge any newly defined initial parts (e.g. cable catalog)
     for (const initPart of INITIAL_PARTS) {
@@ -379,8 +450,8 @@ export class DB {
   static getPurchaseOrders(): PurchaseOrder[] {
     const pos = getOrSeed(KEYS.PURCHASE_ORDERS, INITIAL_PURCHASE_ORDERS);
     const validSupplierIds = new Set(this.getSuppliers().map(s => s.id));
-    // Filter out any orphaned purchase orders without a valid registered supplier
-    const validPOs = pos.filter(po => validSupplierIds.has(po.supplierId));
+    // Filter out any demo purchase orders (po-1..po-9) or orphaned purchase orders without a valid registered supplier
+    const validPOs = pos.filter(po => !/^po-[1-9]$/.test(po.id) && validSupplierIds.has(po.supplierId));
     if (validPOs.length !== pos.length) {
       save(KEYS.PURCHASE_ORDERS, validPOs);
     }
@@ -390,7 +461,12 @@ export class DB {
     save(KEYS.PURCHASE_ORDERS, data);
   }
   static getPurchaseOrderItems(): PurchaseOrderItem[] {
-    return getOrSeed(KEYS.PURCHASE_ORDER_ITEMS, INITIAL_PURCHASE_ORDER_ITEMS);
+    const pois = getOrSeed(KEYS.PURCHASE_ORDER_ITEMS, INITIAL_PURCHASE_ORDER_ITEMS);
+    const validPOIs = pois.filter(poi => !/^poi-[1-9]$/.test(poi.id) && !/^part-([1-9]|10)$/.test(poi.partId));
+    if (validPOIs.length !== pois.length) {
+      save(KEYS.PURCHASE_ORDER_ITEMS, validPOIs);
+    }
+    return validPOIs;
   }
   static savePurchaseOrderItems(data: PurchaseOrderItem[]) {
     save(KEYS.PURCHASE_ORDER_ITEMS, data);
@@ -945,7 +1021,12 @@ export class DB {
 
   // ─── Phase 4: Damaged Stock ─────────────────────────────────────────────────
   static getDamagedStock(): DamagedStock[] {
-    return getOrSeed(KEYS.DAMAGED_STOCK, INITIAL_DAMAGED_STOCK);
+    const list = getOrSeed(KEYS.DAMAGED_STOCK, INITIAL_DAMAGED_STOCK);
+    const filtered = list.filter(d => !/^dmg-[0-9]$/.test(d.id) && !/^part-([1-9]|10)$/.test(d.partId));
+    if (filtered.length !== list.length) {
+      save(KEYS.DAMAGED_STOCK, filtered);
+    }
+    return filtered;
   }
   static saveDamagedStock(data: DamagedStock[]) {
     save(KEYS.DAMAGED_STOCK, data);
@@ -978,7 +1059,12 @@ export class DB {
 
   // ─── Phase 4: Stock Adjustments ─────────────────────────────────────────────
   static getStockAdjustments(): StockAdjustment[] {
-    return getOrSeed(KEYS.STOCK_ADJUSTMENTS, INITIAL_STOCK_ADJUSTMENTS);
+    const list = getOrSeed(KEYS.STOCK_ADJUSTMENTS, INITIAL_STOCK_ADJUSTMENTS);
+    const filtered = list.filter(a => !/^adj-[0-9]$/.test(a.id) && !/^part-([1-9]|10)$/.test(a.partId));
+    if (filtered.length !== list.length) {
+      save(KEYS.STOCK_ADJUSTMENTS, filtered);
+    }
+    return filtered;
   }
   static saveStockAdjustments(data: StockAdjustment[]) {
     save(KEYS.STOCK_ADJUSTMENTS, data);
@@ -1006,7 +1092,12 @@ export class DB {
 
   // ─── Phase 4: Notifications ──────────────────────────────────────────────────
   static getNotifications(): AppNotification[] {
-    return getOrSeed(KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS);
+    const list = getOrSeed(KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS);
+    const filtered = list.filter(n => !/^notif-[1-7]$/.test(n.id) && !n.message?.includes('Brembo'));
+    if (filtered.length !== list.length) {
+      save(KEYS.NOTIFICATIONS, filtered);
+    }
+    return filtered;
   }
   static saveNotifications(data: AppNotification[]) {
     save(KEYS.NOTIFICATIONS, data);
