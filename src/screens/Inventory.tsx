@@ -171,15 +171,37 @@ export const Inventory: React.FC<InventoryProps> = ({
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPartForm.name || !newPartForm.sku || !newPartForm.categoryId || !newPartForm.supplierId) {
-      alert('Please fill in all required fields (Name, SKU, Category, Supplier).');
+    if (!newPartForm.name.trim() || !newPartForm.categoryId || !newPartForm.supplierId) {
+      alert('Please fill in all required fields (Part Name, Category, Supplier).');
       return;
     }
 
-    const generatedBarcode = newPartForm.barcode || `74${Date.now().toString().slice(-10)}`;
+    // Auto-generate SKU if left blank
+    const selectedCategory = categories.find(c => c.id === newPartForm.categoryId);
+    const catCode = selectedCategory
+      ? selectedCategory.name.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase()
+      : 'PRT';
+    const brandCode = newPartForm.brand
+      ? newPartForm.brand.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase()
+      : 'GEN';
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
+
+    const finalSKU = newPartForm.sku.trim()
+      ? newPartForm.sku.trim().toUpperCase()
+      : `${catCode}-${brandCode}-${randomSuffix}`;
+
+    const finalOEM = newPartForm.oemNumber.trim()
+      ? newPartForm.oemNumber.trim().toUpperCase()
+      : `OEM-${brandCode}-${Date.now().toString().slice(-6)}`;
+
+    const generatedBarcode = newPartForm.barcode.trim() || `74${Date.now().toString().slice(-10)}`;
     addPart({
       ...newPartForm,
+      name: newPartForm.name.trim(),
+      sku: finalSKU,
+      oemNumber: finalOEM,
       barcode: generatedBarcode,
+      imageUrl: newPartForm.imageUrl.trim() || '/parts_thumbnail.png',
       wholesalePrice: newPartForm.wholesalePrice || newPartForm.costPrice,
       salePrice: newPartForm.salePrice || newPartForm.wholesalePrice
     });
@@ -1168,16 +1190,18 @@ export const Inventory: React.FC<InventoryProps> = ({
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Motorcycle Model Links</label>
-                  <div style={{ maxHeight: '100px', overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '8px' }}>
+                  <label className="form-label">
+                    Motorcycle Model Links <span style={{ fontSize: '0.75rem', color: 'var(--color-brand)', fontWeight: 600 }}>({editForm?.compatibilityIds.length || 0} linked)</span>
+                  </label>
+                  <div style={{ maxHeight: '160px', overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '8px', backgroundColor: 'var(--bg-subtle)' }}>
                     {vehicles.map(v => (
-                      <label key={v.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', fontSize: '0.8rem', cursor: 'pointer' }}>
+                      <label key={v.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 6px', fontSize: '0.8rem', cursor: 'pointer', borderRadius: '4px' }}>
                         <input
                           type="checkbox"
                           checked={editForm?.compatibilityIds.includes(v.id) || false}
                           onChange={() => handleEditCompatToggle(v.id)}
                         />
-                        {v.make} {v.model} ({v.year})
+                        <span style={{ fontWeight: 500 }}>{v.make} {v.model}</span> <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>({v.year} • {v.engineCC})</span>
                       </label>
                     ))}
                   </div>
@@ -1201,36 +1225,40 @@ export const Inventory: React.FC<InventoryProps> = ({
       >
         <form onSubmit={handleAddSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           
-          <div className="form-group">
-            <label className="form-label">Part Name *</label>
+          <div className="form-group" style={{ marginBottom: '2px' }}>
+            <label className="form-label" style={{ fontWeight: 700, fontSize: '0.875rem' }}>Part Name *</label>
             <input
               type="text"
               className="form-input"
-              placeholder="e.g. Brembo Sintered Brake Pads"
+              placeholder="e.g. Brembo Sintered Brake Pads Front"
               value={newPartForm.name}
               onChange={e => setNewPartForm(prev => ({ ...prev, name: e.target.value }))}
+              autoFocus
               required
             />
           </div>
 
           <div className="grid-cols-2">
             <div className="form-group">
-              <label className="form-label">SKU Code *</label>
+              <label className="form-label">
+                SKU Code <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>(auto-generated if blank)</span>
+              </label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="BRK-PAD-YAM-001"
+                placeholder="Leave blank to auto-generate"
                 value={newPartForm.sku}
                 onChange={e => setNewPartForm(prev => ({ ...prev, sku: e.target.value }))}
-                required
               />
             </div>
             <div className="form-group">
-              <label className="form-label">OEM Part Number</label>
+              <label className="form-label">
+                OEM Part Number <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>(auto-generated if blank)</span>
+              </label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="4B8-W0045-00-00"
+                placeholder="Leave blank to auto-generate"
                 value={newPartForm.oemNumber}
                 onChange={e => setNewPartForm(prev => ({ ...prev, oemNumber: e.target.value }))}
               />
@@ -1383,10 +1411,13 @@ export const Inventory: React.FC<InventoryProps> = ({
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Image Thumbnail Path</label>
+              <label className="form-label">
+                Image Thumbnail Path <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 400 }}>(URL or /parts_thumbnail.png)</span>
+              </label>
               <input
                 type="text"
                 className="form-input"
+                placeholder="/parts_thumbnail.png or https://..."
                 value={newPartForm.imageUrl}
                 onChange={e => setNewPartForm(prev => ({ ...prev, imageUrl: e.target.value }))}
               />
@@ -1404,10 +1435,12 @@ export const Inventory: React.FC<InventoryProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Compatible Motorcycle Models</label>
-            <div style={{ maxHeight: '100px', overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '8px' }}>
+            <label className="form-label">
+              Compatible Motorcycle Models <span style={{ fontSize: '0.75rem', color: 'var(--color-brand)', fontWeight: 600 }}>({newPartForm.compatibilityIds.length} selected)</span>
+            </label>
+            <div style={{ maxHeight: '160px', overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '8px', backgroundColor: 'var(--bg-subtle)' }}>
               {vehicles.map(v => (
-                <label key={v.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0', fontSize: '0.8rem', cursor: 'pointer' }}>
+                <label key={v.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 6px', fontSize: '0.8rem', cursor: 'pointer', borderRadius: '4px' }}>
                   <input
                     type="checkbox"
                     checked={newPartForm.compatibilityIds.includes(v.id)}
@@ -1418,7 +1451,7 @@ export const Inventory: React.FC<InventoryProps> = ({
                       setNewPartForm(prev => ({ ...prev, compatibilityIds: list }));
                     }}
                   />
-                  {v.make} {v.model} ({v.year})
+                  <span style={{ fontWeight: 500 }}>{v.make} {v.model}</span> <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>({v.year} • {v.engineCC})</span>
                 </label>
               ))}
             </div>

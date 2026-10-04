@@ -29,6 +29,15 @@ export const Modal: React.FC<ModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  const bodyRef = React.useRef<HTMLDivElement>(null);
+
+  // Reset scroll to top whenever modal opens
+  useEffect(() => {
+    if (isOpen && bodyRef.current) {
+      bodyRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   if (type === 'drawer') {
@@ -46,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
               </svg>
             </button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" ref={bodyRef}>
             {children}
           </div>
           {footer && (
@@ -73,7 +82,7 @@ export const Modal: React.FC<ModalProps> = ({
             </svg>
           </button>
         </div>
-        <div className="modal-body">
+        <div className="modal-body" ref={bodyRef}>
           {children}
         </div>
         {footer && (

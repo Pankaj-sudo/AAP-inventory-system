@@ -4,7 +4,7 @@ import { useInventory } from '../hooks/useInventory';
 import { Table } from '../components/Table';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Building2 } from 'lucide-react';
 
 interface SuppliersProps {
   isOpenAddPOModal: boolean;
@@ -276,85 +276,177 @@ export const Suppliers: React.FC<SuppliersProps> = ({
           )}
         </div>
 
-        {/* Right Column: Dynamic View (Global POs or Supplier Specific POs) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)', margin: 0 }}>
-              {activeSupplier ? `${activeSupplier.name} Purchase History` : 'Global Restock Ledger'}
-            </h3>
-            {activeSupplier && (
-              <Button
-                variant="danger"
-                size="sm"
-                icon={<Trash2 size={14} />}
-                onClick={() => handleDeleteSupplier(activeSupplier.id, activeSupplier.name)}
-              >
-                Delete Supplier
-              </Button>
-            )}
-          </div>
-
-          <Table
-            columns={[
-              {
-                header: 'PO ID / Date',
-                render: (row) => (
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{row.id}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Ordered: {row.orderDate}</div>
+        {/* Right Column: Active Supplier View OR Clean Empty State */}
+        {activeSupplier ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            
+            {/* Active Supplier Profile Card */}
+            <div className="card" style={{ padding: '1.25rem', backgroundColor: 'var(--bg-panel)', border: '1px solid var(--border-color)', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <h2 className="heading-display" style={{ fontSize: '1.35rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+                      {activeSupplier.name}
+                    </h2>
+                    <span className="badge badge-secondary" style={{ fontSize: '0.7rem' }}>
+                      {activeSupplier.leadTimeDays}d standard lead
+                    </span>
                   </div>
-                )
-              },
-              {
-                header: 'Supplier',
-                render: (row) => <span>{getSupplierName(row.supplierId)}</span>
-              },
-              {
-                header: 'Net Total',
-                render: (row) => <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Rs. {row.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-              },
-              {
-                header: 'Expected Arrival',
-                accessor: 'expectedDelivery'
-              },
-              {
-                header: 'Status',
-                render: (row) => {
-                  let bClass = 'badge-secondary';
-                  if (row.status === 'RECEIVED') bClass = 'badge-success';
-                  if (row.status === 'SENT') bClass = 'badge-warning';
-                  if (row.status === 'CANCELLED') bClass = 'badge-danger';
-                  return <span className={`badge ${bClass}`}>{row.status}</span>;
-                }
-              },
-              {
-                header: 'Actions',
-                render: (row) => (
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <Button variant="ghost" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => {
-                      const orderItems = getItemsForOrder(row.id);
-                      setSelectedPOForDetail({ ...row, items: orderItems });
-                    }}>
-                      View Items
-                    </Button>
-                    {row.status === 'SENT' && (
-                      <Button variant="primary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => {
-                        if (window.confirm('Mark this purchase order as RECEIVED? Stock levels will be updated.')) {
-                          updateOrderStatus(row.id, 'RECEIVED');
-                        }
-                      }}>
-                        Receive
-                      </Button>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    {activeSupplier.contactPerson && (
+                      <span><strong>Contact:</strong> {activeSupplier.contactPerson}</span>
+                    )}
+                    {activeSupplier.phone && (
+                      <span><strong>Phone:</strong> {activeSupplier.phone}</span>
+                    )}
+                    {activeSupplier.email && (
+                      <span><strong>Email:</strong> {activeSupplier.email}</span>
                     )}
                   </div>
-                )
-              }
-            ]}
-            data={activeSupplier ? supplierPOs : purchaseOrders}
-            keyExtractor={(row) => row.id}
-            emptyMessage="No purchase orders logged."
-          />
-        </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setNewPOForm({
+                        supplierId: activeSupplier.id,
+                        items: []
+                      });
+                      setIsOpenAddPOModal(true);
+                    }}
+                  >
+                    + Create PO
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    icon={<Trash2 size={14} />}
+                    onClick={() => handleDeleteSupplier(activeSupplier.id, activeSupplier.name)}
+                  >
+                    Delete Supplier
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Supplier Orders */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)', margin: 0 }}>
+                  Purchase Orders ({supplierPOs.length})
+                </h3>
+              </div>
+
+              <Table
+                columns={[
+                  {
+                    header: 'PO ID / Date',
+                    render: (row) => (
+                      <div>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{row.id}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Ordered: {row.orderDate}</div>
+                      </div>
+                    )
+                  },
+                  {
+                    header: 'Net Total',
+                    render: (row) => <span style={{ fontWeight: 600, fontFamily: 'var(--font-mono)', fontFeatureSettings: "'tnum'" }}>Rs. {row.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  },
+                  {
+                    header: 'Expected Arrival',
+                    accessor: 'expectedDelivery'
+                  },
+                  {
+                    header: 'Status',
+                    render: (row) => {
+                      let bClass = 'badge-secondary';
+                      if (row.status === 'RECEIVED') bClass = 'badge-success';
+                      if (row.status === 'SENT') bClass = 'badge-warning';
+                      if (row.status === 'CANCELLED') bClass = 'badge-danger';
+                      return <span className={`badge ${bClass}`}>{row.status}</span>;
+                    }
+                  },
+                  {
+                    header: 'Actions',
+                    render: (row) => (
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <Button variant="ghost" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => {
+                          const orderItems = getItemsForOrder(row.id);
+                          setSelectedPOForDetail({ ...row, items: orderItems });
+                        }}>
+                          View Items
+                        </Button>
+                        {row.status === 'SENT' && (
+                          <Button variant="primary" size="sm" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={() => {
+                            if (window.confirm('Mark this purchase order as RECEIVED? Stock levels will be updated.')) {
+                              updateOrderStatus(row.id, 'RECEIVED');
+                            }
+                          }}>
+                            Receive
+                          </Button>
+                        )}
+                      </div>
+                    )
+                  }
+                ]}
+                data={supplierPOs}
+                keyExtractor={(row) => row.id}
+                emptyMessage={`No purchase orders logged for ${activeSupplier.name}.`}
+              />
+            </div>
+
+          </div>
+        ) : (
+          /* Clean Selection Placeholder */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div 
+              className="card"
+              style={{ 
+                padding: '3.5rem 2rem', 
+                textAlign: 'center', 
+                backgroundColor: 'var(--bg-panel)', 
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '14px'
+              }}
+            >
+              <div 
+                style={{ 
+                  width: '56px', 
+                  height: '56px', 
+                  borderRadius: '14px', 
+                  backgroundColor: 'var(--bg-hover)', 
+                  border: '1px solid var(--border-color)',
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  color: 'var(--text-tertiary)'
+                }}
+              >
+                <Building2 size={26} />
+              </div>
+              <h3 className="heading-display" style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+                Select a Supplier
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '380px', margin: 0, lineHeight: 1.5 }}>
+                Click any supplier from the directory on the left to view their profile, contact details, and specific purchase orders.
+              </p>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+                <Button variant="secondary" size="sm" onClick={() => setIsOpenAddSupplierModal(true)}>
+                  Add Supplier
+                </Button>
+                <Button variant="primary" size="sm" onClick={() => setIsOpenAddPOModal(true)}>
+                  Create Purchase Order
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
 

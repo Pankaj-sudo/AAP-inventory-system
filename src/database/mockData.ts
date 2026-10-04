@@ -237,7 +237,19 @@ export const INITIAL_VEHICLES: VehicleModel[] = [
   { id: 'veh-2', make: 'Honda', model: 'CB500X', year: '2019-2023', engineCC: '471cc' },
   { id: 'veh-3', make: 'Kawasaki', model: 'Ninja 400', year: '2018-2024', engineCC: '399cc' },
   { id: 'veh-4', make: 'Suzuki', model: 'V-Strom 650', year: '2017-2023', engineCC: '645cc' },
-  { id: 'veh-5', make: 'KTM', model: '390 Duke', year: '2021-2024', engineCC: '373cc' }
+  { id: 'veh-5', make: 'KTM', model: 'Duke 390', year: '2020-2024', engineCC: '373cc' },
+  { id: 'veh-6', make: 'Bajaj', model: 'Pulsar 150', year: '2015-2024', engineCC: '149.5cc' },
+  { id: 'veh-7', make: 'Bajaj', model: 'Pulsar 180', year: '2015-2023', engineCC: '178.6cc' },
+  { id: 'veh-8', make: 'Bajaj', model: 'Pulsar 220', year: '2016-2024', engineCC: '220cc' },
+  { id: 'veh-9', make: 'Bajaj', model: 'Discover 150', year: '2014-2020', engineCC: '144.8cc' },
+  { id: 'veh-10', make: 'TVS', model: 'Apache 200', year: '2018-2024', engineCC: '197.7cc' },
+  { id: 'veh-11', make: 'Yamaha', model: 'FZSv3', year: '2019-2024', engineCC: '149cc' },
+  { id: 'veh-12', make: 'Yamaha', model: 'FZS V4', year: '2023-2025', engineCC: '149cc' },
+  { id: 'veh-13', make: 'Yamaha', model: 'Rayz', year: '2018-2024', engineCC: '125cc' },
+  { id: 'veh-14', make: 'Honda', model: 'Dio', year: '2017-2024', engineCC: '109.5cc' },
+  { id: 'veh-15', make: 'KTM', model: 'Duke 200', year: '2018-2024', engineCC: '199.5cc' },
+  { id: 'veh-16', make: 'KTM', model: 'Duke 250', year: '2019-2024', engineCC: '248.8cc' },
+  { id: 'veh-17', make: 'Royal Enfield', model: 'Bullet 350', year: '2016-2024', engineCC: '349cc' }
 ];
 
 export const INITIAL_PARTS: Part[] = [

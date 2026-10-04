@@ -139,11 +139,33 @@ export class DB {
   static deleteSupplier(id: string) {
     const list = this.getSuppliers().filter(s => s.id !== id);
     this.saveSuppliers(list);
+    // Remove purchase orders associated with this deleted supplier
+    const remainingPOs = this.getPurchaseOrders().filter(po => po.supplierId !== id);
+    this.savePurchaseOrders(remainingPOs);
+    // Unlink supplier from parts
+    const parts = this.getParts().map(p => p.supplierId === id ? { ...p, supplierId: '' } : p);
+    this.saveParts(parts);
   }
 
   // --- Vehicle Models ---
   static getVehicles(): VehicleModel[] {
-    return getOrSeed(KEYS.VEHICLES, INITIAL_VEHICLES);
+    const list = getOrSeed(KEYS.VEHICLES, INITIAL_VEHICLES);
+    let hasChanges = false;
+    for (const initVeh of INITIAL_VEHICLES) {
+      const exists = list.some(
+        v => v.id === initVeh.id || 
+             (v.make.toLowerCase() === initVeh.make.toLowerCase() && 
+              v.model.toLowerCase() === initVeh.model.toLowerCase())
+      );
+      if (!exists) {
+        list.push(initVeh);
+        hasChanges = true;
+      }
+    }
+    if (hasChanges) {
+      this.saveVehicles(list);
+    }
+    return list;
   }
   static saveVehicles(data: VehicleModel[]) {
     save(KEYS.VEHICLES, data);
@@ -318,7 +340,14 @@ export class DB {
 
   // --- Purchase Orders ---
   static getPurchaseOrders(): PurchaseOrder[] {
-    return getOrSeed(KEYS.PURCHASE_ORDERS, INITIAL_PURCHASE_ORDERS);
+    const pos = getOrSeed(KEYS.PURCHASE_ORDERS, INITIAL_PURCHASE_ORDERS);
+    const validSupplierIds = new Set(this.getSuppliers().map(s => s.id));
+    // Filter out any orphaned purchase orders without a valid registered supplier
+    const validPOs = pos.filter(po => validSupplierIds.has(po.supplierId));
+    if (validPOs.length !== pos.length) {
+      save(KEYS.PURCHASE_ORDERS, validPOs);
+    }
+    return validPOs;
   }
   static savePurchaseOrders(data: PurchaseOrder[]) {
     save(KEYS.PURCHASE_ORDERS, data);
