@@ -188,6 +188,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
     badgeClass: po.status === 'RECEIVED' ? 'badge-success' : po.status === 'SENT' ? 'badge-warning' : 'badge-secondary'
   }));
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', paddingBottom: '2.5rem' }}>
 
@@ -206,7 +213,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate, onTriggerActio
               fontFamily: 'var(--font-display)' 
             }}
           >
-            Good evening, Pankaj! 👋
+            {getGreeting()}, Anju Auto Parts! 👋
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '6px', fontWeight: 500 }}>
             Here's what's happening with your business today · Anju Auto Parts
