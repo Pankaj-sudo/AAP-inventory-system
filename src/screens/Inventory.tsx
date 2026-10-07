@@ -1230,13 +1230,15 @@ export const Inventory: React.FC<InventoryProps> = ({
             <input
               type="text"
               className="form-input"
-              placeholder="e.g. SPRAY - Black, SPRAY - White"
+              placeholder="e.g. ACC Cable Dio, Clutch Cable Unicorn, SPRAY - Black"
               value={newPartForm.name}
               onChange={e => {
                 const val = e.target.value;
                 setNewPartForm(prev => {
                   let rp = prev.reorderPoint;
-                  if (/spray.*(black|white)/i.test(val)) {
+                  if (/cable/i.test(val)) {
+                    rp = 5;
+                  } else if (/spray.*(black|white)/i.test(val)) {
                     if (rp === 3 || rp === 0) rp = 5;
                   } else if (rp === 5 && /spray/i.test(prev.name) && !/spray.*(black|white)/i.test(val)) {
                     rp = 3;
@@ -1286,11 +1288,13 @@ export const Inventory: React.FC<InventoryProps> = ({
                   const catId = e.target.value;
                   const cat = categories.find(c => c.id === catId);
                   const isSpray = cat && /spray|lube/i.test(cat.name);
+                  const isCable = cat && /cable/i.test(cat.name);
                   setNewPartForm(prev => ({
                     ...prev,
                     categoryId: catId,
-                    unit: isSpray ? 'Can' : prev.unit,
-                    brand: isSpray && prev.brand === 'Yamaha' ? 'Universal' : prev.brand
+                    unit: isSpray ? 'Can' : (isCable ? 'Pcs' : prev.unit),
+                    brand: isSpray && prev.brand === 'Yamaha' ? 'Universal' : prev.brand,
+                    reorderPoint: isCable ? 5 : prev.reorderPoint
                   }));
                 }}
                 required

@@ -333,12 +333,28 @@ export class DB {
         existing.name = initPart.name;
         existing.description = initPart.description;
         existing.compatibilityIds = initPart.compatibilityIds;
+        existing.reorderPoint = 5;
         hasChanges = true;
       } else if (initPart.id === 'cab-acc-2' && existing.stockLevel < 10) {
         existing.stockLevel = 10;
         existing.name = initPart.name;
         existing.description = initPart.description;
+        existing.reorderPoint = 5;
         hasChanges = true;
+      } else if (initPart.id === 'cab-clu-1' && existing.stockLevel < 19) {
+        existing.stockLevel = 19;
+        existing.reorderPoint = 5;
+        hasChanges = true;
+      } else if (initPart.id === 'cab-clu-2' && existing.stockLevel < 16) {
+        existing.stockLevel = 16;
+        existing.reorderPoint = 5;
+        hasChanges = true;
+      } else if (initPart.id.startsWith('cab-') && (existing.id === initPart.id || existing.name.toLowerCase() === initPart.name.toLowerCase())) {
+        if (existing.stockLevel !== initPart.stockLevel || existing.reorderPoint !== 5) {
+          existing.stockLevel = initPart.stockLevel;
+          existing.reorderPoint = 5;
+          hasChanges = true;
+        }
       } else if (initPart.id.startsWith('spr-')) {
         if (existing.stockLevel !== initPart.stockLevel || existing.reorderPoint !== initPart.reorderPoint || existing.categoryId !== initPart.categoryId) {
           existing.stockLevel = initPart.stockLevel;
@@ -346,6 +362,14 @@ export class DB {
           existing.categoryId = initPart.categoryId;
           hasChanges = true;
         }
+      }
+    }
+
+    // Ensure all Control Cables (cat-12) have minimum stock = 5
+    for (const p of list) {
+      if (p.categoryId === 'cat-12' && p.reorderPoint !== 5) {
+        p.reorderPoint = 5;
+        hasChanges = true;
       }
     }
 
