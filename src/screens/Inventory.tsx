@@ -81,6 +81,7 @@ export const Inventory: React.FC<InventoryProps> = ({
 
   // Drawer Stock Quick Adjust Form State
   const [adjustQty, setAdjustQty] = useState('');
+  const [directStockQty, setDirectStockQty] = useState('');
 
   // Add Part Form State
   const [newPartForm, setNewPartForm] = useState({
@@ -117,6 +118,7 @@ export const Inventory: React.FC<InventoryProps> = ({
     setEditForm(null);
     setActiveDrawerTab('specs');
     setAdjustQty('');
+    setDirectStockQty('');
   };
 
   const handleCloseDrawer = () => {
@@ -124,6 +126,7 @@ export const Inventory: React.FC<InventoryProps> = ({
     setIsEditing(false);
     setEditForm(null);
     setAdjustQty('');
+    setDirectStockQty('');
   };
 
   const handleQuickAdjust = (e: React.FormEvent) => {
@@ -678,20 +681,29 @@ export const Inventory: React.FC<InventoryProps> = ({
 
               return (
                 <div 
-                  onDoubleClick={() => handleDoubleCellClick(row.id, 'stockLevel', row.stockLevel)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDoubleCellClick(row.id, 'stockLevel', row.stockLevel);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handleDoubleCellClick(row.id, 'stockLevel', row.stockLevel);
+                  }}
                   style={{ cursor: 'pointer' }}
-                  title="Double-click to adjust Stock Units inline"
+                  title="Click to edit Stock Units directly"
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {isEditingStock ? (
                       <input
-                        type="text"
+                        type="number"
+                        min="0"
                         className="inline-edit-input"
                         autoFocus
                         value={editingValue}
                         onChange={e => setEditingValue(e.target.value)}
                         onBlur={() => handleInlineSave(row)}
                         onKeyDown={e => handleInlineKeyDown(e, row)}
+                        onClick={e => e.stopPropagation()}
                       />
                     ) : (
                       <span 
@@ -710,7 +722,7 @@ export const Inventory: React.FC<InventoryProps> = ({
                       >
                         <span>{statusSymbol}</span>
                         <span>{row.stockLevel} {row.unit}</span>
-                        <Edit2 size={9} style={{ opacity: 0.4 }} />
+                        <Edit2 size={9} style={{ opacity: 0.6 }} />
                       </span>
                     )}
                   </div>
@@ -875,25 +887,46 @@ export const Inventory: React.FC<InventoryProps> = ({
                     </div>
 
                     {/* Stock Level Quick Adjustment form */}
-                    <div className="card" style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--bg-hover)' }}>
-                      <form onSubmit={handleQuickAdjust} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Physical Quantity Control</span>
-                          <span className={`badge ${activePart.stockLevel === 0 ? 'badge-danger' : activePart.stockLevel <= activePart.reorderPoint ? 'badge-warning' : 'badge-success'}`}>
-                            {activePart.stockLevel} units
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                          <input
-                            type="number"
-                            className="form-input"
-                            style={{ height: '36px', flex: 1 }}
-                            placeholder="Qty change (+5, -2)..."
-                            value={adjustQty}
-                            onChange={e => setAdjustQty(e.target.value)}
-                          />
-                          <Button variant="secondary" size="sm" type="submit" style={{ height: '36px' }}>Adjust</Button>
-                        </div>
+                    <div className="card" style={{ padding: '0.875rem 1rem', backgroundColor: 'var(--bg-hover)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Physical Quantity Control</span>
+                        <span className={`badge ${activePart.stockLevel === 0 ? 'badge-danger' : activePart.stockLevel <= activePart.reorderPoint ? 'badge-warning' : 'badge-success'}`}>
+                          {activePart.stockLevel} {activePart.unit}
+                        </span>
+                      </div>
+
+                      {/* Direct Set Stock Form */}
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const val = parseInt(directStockQty);
+                        if (!isNaN(val) && val >= 0) {
+                          updatePart({ ...activePart, stockLevel: val });
+                          setDirectStockQty('');
+                        }
+                      }} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <input
+                          type="number"
+                          min="0"
+                          className="form-input"
+                          style={{ height: '36px', flex: 1 }}
+                          placeholder={`Set exact stock (currently ${activePart.stockLevel})...`}
+                          value={directStockQty}
+                          onChange={e => setDirectStockQty(e.target.value)}
+                        />
+                        <Button variant="primary" size="sm" type="submit" style={{ height: '36px', minWidth: '65px' }}>Set</Button>
+                      </form>
+
+                      {/* Relative +/- Adjust Form */}
+                      <form onSubmit={handleQuickAdjust} style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="number"
+                          className="form-input"
+                          style={{ height: '36px', flex: 1 }}
+                          placeholder="Add/deduct (+5, -2)..."
+                          value={adjustQty}
+                          onChange={e => setAdjustQty(e.target.value)}
+                        />
+                        <Button variant="secondary" size="sm" type="submit" style={{ height: '36px', minWidth: '65px' }}>Adjust</Button>
                       </form>
                     </div>
 
