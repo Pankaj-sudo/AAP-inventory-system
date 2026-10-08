@@ -39,7 +39,7 @@ const KEYS = {
 };
 
 // ── Data Version: bump this to force a reseed on all browsers ──────────────
-const DATA_VERSION = '8.0'; // Purge demo suppliers, helmets, customers, and seed full 56 inventory parts
+const DATA_VERSION = '9.0'; // Add Brakes & Chain Sprocket categories and seed 55 parts (total 111 parts)
 const VERSION_KEY = 'inv_data_version';
 const SHEET_URL_KEY = 'inv_google_sheet_url';
 
@@ -47,7 +47,7 @@ const SHEET_URL_KEY = 'inv_google_sheet_url';
   const stored = localStorage.getItem(VERSION_KEY);
   if (stored !== DATA_VERSION) {
     try {
-      // 1. Ensure all 56 real inventory parts exist in localStorage and purge old template demo parts (part-1 through part-10)
+      // 1. Ensure all 111 real inventory parts exist in localStorage and purge old template demo parts (part-1 through part-10)
       const partsRaw = localStorage.getItem(KEYS.PARTS);
       let currentParts: Part[] = [];
       if (partsRaw) {
@@ -193,6 +193,26 @@ const SHEET_URL_KEY = 'inv_google_sheet_url';
             localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(cleanedNotifs));
           }
         } catch (e) {}
+      }
+
+      // 9. Sync vehicle models
+      const vehRaw = localStorage.getItem(KEYS.VEHICLES);
+      if (vehRaw) {
+        try {
+          const vehs = JSON.parse(vehRaw);
+          if (Array.isArray(vehs)) {
+            let vehChanged = false;
+            for (const initVeh of INITIAL_VEHICLES) {
+              if (!vehs.some((v: any) => v.id === initVeh.id || (v.make.toLowerCase() === initVeh.make.toLowerCase() && v.model.toLowerCase() === initVeh.model.toLowerCase()))) {
+                vehs.push(initVeh);
+                vehChanged = true;
+              }
+            }
+            if (vehChanged) localStorage.setItem(KEYS.VEHICLES, JSON.stringify(vehs));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem(KEYS.VEHICLES, JSON.stringify(INITIAL_VEHICLES));
       }
     } catch (e) {
       console.warn('[DB] Migration cleanup notice:', e);
@@ -429,10 +449,14 @@ export class DB {
       }
     }
 
-    // Default Control Cables (cat-12) minimum stock to 5 if not set
+    // Default minimum stocks by category if not set
     for (const p of list) {
       if (p.categoryId === 'cat-12' && (p.reorderPoint === undefined || p.reorderPoint < 1)) {
         p.reorderPoint = 5;
+        hasChanges = true;
+      }
+      if ((p.categoryId === 'cat-14' || p.categoryId === 'cat-15') && (p.reorderPoint === undefined || p.reorderPoint < 1)) {
+        p.reorderPoint = 3;
         hasChanges = true;
       }
     }
