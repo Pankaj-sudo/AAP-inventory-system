@@ -200,8 +200,13 @@ export const Suppliers: React.FC<SuppliersProps> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <h3 className="heading-display" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Suppliers Directory</h3>
           {suppliers.length === 0 ? (
-            <div className="card" style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              No suppliers found. Click "Add Supplier" to create one.
+            <div className="card" style={{ padding: '2rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <Building2 size={28} style={{ color: 'var(--text-tertiary)' }} />
+              <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>No suppliers added yet</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', maxWidth: '240px' }}>Register parts distributors, vendors, and manufacturers.</div>
+              <Button variant="secondary" size="sm" onClick={() => setIsOpenAddSupplierModal(true)} style={{ marginTop: '6px' }}>
+                + Add Supplier
+              </Button>
             </div>
           ) : (
             suppliers.map(sup => {

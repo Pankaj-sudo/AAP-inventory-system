@@ -282,7 +282,7 @@ export const Customers: React.FC = () => {
             ]}
             data={filteredCustomers}
             keyExtractor={row => row.id}
-            emptyMessage="No customer records matched your query."
+            emptyMessage={customers.length === 0 ? "No customers registered yet. Click '+ Add Customer' to create your first client record." : "No customer records matched your query."}
           />
         </div>
 

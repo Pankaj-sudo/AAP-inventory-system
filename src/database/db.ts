@@ -39,7 +39,7 @@ const KEYS = {
 };
 
 // ── Data Version: bump this to force a reseed on all browsers ──────────────
-const DATA_VERSION = '7.2'; // Purge template demo parts & clean inventory
+const DATA_VERSION = '8.0'; // Purge demo suppliers, helmets, customers, and seed full 56 inventory parts
 const VERSION_KEY = 'inv_data_version';
 const SHEET_URL_KEY = 'inv_google_sheet_url';
 
@@ -47,60 +47,152 @@ const SHEET_URL_KEY = 'inv_google_sheet_url';
   const stored = localStorage.getItem(VERSION_KEY);
   if (stored !== DATA_VERSION) {
     try {
-      // Purge template demo parts (part-1 through part-10) while preserving user-created parts
+      // 1. Ensure all 56 real inventory parts exist in localStorage and purge old template demo parts (part-1 through part-10)
       const partsRaw = localStorage.getItem(KEYS.PARTS);
+      let currentParts: Part[] = [];
       if (partsRaw) {
-        const parts = JSON.parse(partsRaw);
-        if (Array.isArray(parts)) {
-          const cleanedParts = parts.filter((p: any) => !/^part-([1-9]|10)$/.test(p.id));
-          localStorage.setItem(KEYS.PARTS, JSON.stringify(cleanedParts));
+        try {
+          const parsed = JSON.parse(partsRaw);
+          if (Array.isArray(parsed)) currentParts = parsed;
+        } catch (e) {}
+      }
+      currentParts = currentParts.filter((p: any) => !/^part-([1-9]|10)$/.test(p.id));
+
+      for (const initPart of INITIAL_PARTS) {
+        const idx = currentParts.findIndex(
+          p => p.id === initPart.id || 
+               p.sku.toLowerCase() === initPart.sku.toLowerCase() ||
+               p.name.toLowerCase() === initPart.name.toLowerCase()
+        );
+        if (idx === -1) {
+          currentParts.push(initPart);
+        } else {
+          const existing = currentParts[idx];
+          if (!existing.categoryId) existing.categoryId = initPart.categoryId;
+          if (!existing.unit) existing.unit = initPart.unit;
+          if (!existing.binLocation) existing.binLocation = initPart.binLocation;
+          if (existing.reorderPoint === undefined || existing.reorderPoint < 1) {
+            existing.reorderPoint = initPart.reorderPoint;
+          }
         }
       }
+      localStorage.setItem(KEYS.PARTS, JSON.stringify(currentParts));
 
-      // Purge demo purchase orders and items
+      // 2. Purge demo suppliers (sup-1 through sup-4)
+      const supRaw = localStorage.getItem(KEYS.SUPPLIERS);
+      if (supRaw) {
+        try {
+          const sups = JSON.parse(supRaw);
+          if (Array.isArray(sups)) {
+            const cleanedSups = sups.filter((s: any) => !/^sup-[1-4]$/.test(s.id));
+            localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(cleanedSups));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify([]));
+      }
+
+      // 3. Purge demo helmets (hlm-101 through hlm-109)
+      const helmRaw = localStorage.getItem(KEYS.HELMETS);
+      if (helmRaw) {
+        try {
+          const helms = JSON.parse(helmRaw);
+          if (Array.isArray(helms)) {
+            const cleanedHelms = helms.filter((h: any) => !/^hlm-10[1-9]$/.test(h.id));
+            localStorage.setItem(KEYS.HELMETS, JSON.stringify(cleanedHelms));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem(KEYS.HELMETS, JSON.stringify([]));
+      }
+
+      // 4. Purge demo customers (cust-1 through cust-6)
+      const custRaw = localStorage.getItem(KEYS.CUSTOMERS);
+      if (custRaw) {
+        try {
+          const custs = JSON.parse(custRaw);
+          if (Array.isArray(custs)) {
+            const cleanedCusts = custs.filter((c: any) => !/^cust-[1-6]$/.test(c.id));
+            localStorage.setItem(KEYS.CUSTOMERS, JSON.stringify(cleanedCusts));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem(KEYS.CUSTOMERS, JSON.stringify([]));
+      }
+
+      // 5. Clean categories (remove empty demo template categories cat-1 through cat-10)
+      const catRaw = localStorage.getItem(KEYS.CATEGORIES);
+      if (catRaw) {
+        try {
+          const cats = JSON.parse(catRaw);
+          if (Array.isArray(cats)) {
+            const cleanedCats = cats.filter((c: any) => !/^cat-([1-9]|10)$/.test(c.id));
+            for (const initCat of INITIAL_CATEGORIES) {
+              if (!cleanedCats.some((c: any) => c.id === initCat.id || c.name.toLowerCase() === initCat.name.toLowerCase())) {
+                cleanedCats.push(initCat);
+              }
+            }
+            localStorage.setItem(KEYS.CATEGORIES, JSON.stringify(cleanedCats));
+          }
+        } catch (e) {}
+      } else {
+        localStorage.setItem(KEYS.CATEGORIES, JSON.stringify(INITIAL_CATEGORIES));
+      }
+
+      // 6. Purge demo purchase orders and items
       const poRaw = localStorage.getItem(KEYS.PURCHASE_ORDERS);
       if (poRaw) {
-        const pos = JSON.parse(poRaw);
-        if (Array.isArray(pos)) {
-          const cleanedPOs = pos.filter((po: any) => !/^po-[1-9]$/.test(po.id));
-          localStorage.setItem(KEYS.PURCHASE_ORDERS, JSON.stringify(cleanedPOs));
-        }
+        try {
+          const pos = JSON.parse(poRaw);
+          if (Array.isArray(pos)) {
+            const cleanedPOs = pos.filter((po: any) => !/^po-[1-9]$/.test(po.id));
+            localStorage.setItem(KEYS.PURCHASE_ORDERS, JSON.stringify(cleanedPOs));
+          }
+        } catch (e) {}
       }
       const poiRaw = localStorage.getItem(KEYS.PURCHASE_ORDER_ITEMS);
       if (poiRaw) {
-        const pois = JSON.parse(poiRaw);
-        if (Array.isArray(pois)) {
-          const cleanedPOIs = pois.filter((poi: any) => !/^poi-[1-9]$/.test(poi.id) && !/^part-([1-9]|10)$/.test(poi.partId));
-          localStorage.setItem(KEYS.PURCHASE_ORDER_ITEMS, JSON.stringify(cleanedPOIs));
-        }
+        try {
+          const pois = JSON.parse(poiRaw);
+          if (Array.isArray(pois)) {
+            const cleanedPOIs = pois.filter((poi: any) => !/^poi-[1-9]$/.test(poi.id) && !/^part-([1-9]|10)$/.test(poi.partId));
+            localStorage.setItem(KEYS.PURCHASE_ORDER_ITEMS, JSON.stringify(cleanedPOIs));
+          }
+        } catch (e) {}
       }
 
-      // Purge demo movements and history logs referencing demo parts
+      // 7. Purge demo movements and history logs referencing demo parts or demo helmets
       const smRaw = localStorage.getItem(KEYS.STOCK_MOVEMENTS);
       if (smRaw) {
-        const sms = JSON.parse(smRaw);
-        if (Array.isArray(sms)) {
-          const cleanedSMs = sms.filter((sm: any) => !/^part-([1-9]|10)$/.test(sm.partId));
-          localStorage.setItem(KEYS.STOCK_MOVEMENTS, JSON.stringify(cleanedSMs));
-        }
+        try {
+          const sms = JSON.parse(smRaw);
+          if (Array.isArray(sms)) {
+            const cleanedSMs = sms.filter((sm: any) => !/^part-([1-9]|10)$/.test(sm.partId) && !/^hlm-10[1-9]$/.test(sm.partId));
+            localStorage.setItem(KEYS.STOCK_MOVEMENTS, JSON.stringify(cleanedSMs));
+          }
+        } catch (e) {}
       }
       const hlRaw = localStorage.getItem(KEYS.HISTORY_LOGS);
       if (hlRaw) {
-        const hls = JSON.parse(hlRaw);
-        if (Array.isArray(hls)) {
-          const cleanedHLs = hls.filter((hl: any) => !/^part-([1-9]|10)$/.test(hl.partId));
-          localStorage.setItem(KEYS.HISTORY_LOGS, JSON.stringify(cleanedHLs));
-        }
+        try {
+          const hls = JSON.parse(hlRaw);
+          if (Array.isArray(hls)) {
+            const cleanedHLs = hls.filter((hl: any) => !/^part-([1-9]|10)$/.test(hl.partId) && !/^hlm-10[1-9]$/.test(hl.partId));
+            localStorage.setItem(KEYS.HISTORY_LOGS, JSON.stringify(cleanedHLs));
+          }
+        } catch (e) {}
       }
 
-      // Purge demo notifications
+      // 8. Purge demo notifications
       const notifRaw = localStorage.getItem(KEYS.NOTIFICATIONS);
       if (notifRaw) {
-        const notifs = JSON.parse(notifRaw);
-        if (Array.isArray(notifs)) {
-          const cleanedNotifs = notifs.filter((n: any) => !/^notif-[1-7]$/.test(n.id) && !n.message?.includes('Brembo'));
-          localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(cleanedNotifs));
-        }
+        try {
+          const notifs = JSON.parse(notifRaw);
+          if (Array.isArray(notifs)) {
+            const cleanedNotifs = notifs.filter((n: any) => !/^notif-[1-7]$/.test(n.id) && !n.message?.includes('Brembo'));
+            localStorage.setItem(KEYS.NOTIFICATIONS, JSON.stringify(cleanedNotifs));
+          }
+        } catch (e) {}
       }
     } catch (e) {
       console.warn('[DB] Migration cleanup notice:', e);
@@ -157,8 +249,9 @@ function saveLocal(key: string, data: unknown[]): void {
 export class DB {
   // --- Categories ---
   static getCategories(): Category[] {
-    const list = getOrSeed(KEYS.CATEGORIES, INITIAL_CATEGORIES);
-    let hasChanges = false;
+    const rawList = getOrSeed(KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    const list = rawList.filter(c => !/^cat-([1-9]|10)$/.test(c.id));
+    let hasChanges = list.length !== rawList.length;
     for (const initCat of INITIAL_CATEGORIES) {
       if (!list.some(c => c.id === initCat.id || c.name.toLowerCase() === initCat.name.toLowerCase())) {
         list.push(initCat);
@@ -191,7 +284,12 @@ export class DB {
 
   // --- Suppliers ---
   static getSuppliers(): Supplier[] {
-    return getOrSeed(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
+    const rawList = getOrSeed(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
+    const list = rawList.filter(s => !/^sup-[1-4]$/.test(s.id));
+    if (list.length !== rawList.length) {
+      this.saveSuppliers(list);
+    }
+    return list;
   }
   static saveSuppliers(data: Supplier[]) {
     save(KEYS.SUPPLIERS, data);
@@ -925,7 +1023,12 @@ export class DB {
 
   // ─── Phase 4: Customers ──────────────────────────────────────────────────────
   static getCustomers(): Customer[] {
-    return getOrSeed(KEYS.CUSTOMERS, INITIAL_CUSTOMERS);
+    const rawList = getOrSeed(KEYS.CUSTOMERS, INITIAL_CUSTOMERS);
+    const list = rawList.filter(c => !/^cust-[1-6]$/.test(c.id));
+    if (list.length !== rawList.length) {
+      this.saveCustomers(list);
+    }
+    return list;
   }
   static saveCustomers(data: Customer[]) {
     save(KEYS.CUSTOMERS, data);
@@ -1139,7 +1242,12 @@ export class DB {
 
   // --- Helmets & Riding Gear Catalog ---
   static getHelmets(): Helmet[] {
-    return getOrSeed(KEYS.HELMETS, INITIAL_HELMETS);
+    const rawList = getOrSeed(KEYS.HELMETS, INITIAL_HELMETS);
+    const list = rawList.filter(h => !/^hlm-10[1-9]$/.test(h.id));
+    if (list.length !== rawList.length) {
+      this.saveHelmets(list);
+    }
+    return list;
   }
   static saveHelmets(data: Helmet[]) {
     save(KEYS.HELMETS, data);

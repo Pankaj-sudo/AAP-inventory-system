@@ -332,6 +332,37 @@ export const Inventory: React.FC<InventoryProps> = ({
     return { backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #e2e8f0' };
   };
 
+  // Filter status helpers
+  const activeAdvancedFilterCount = [
+    Boolean(filters.brand),
+    Boolean(filters.vehicleId),
+    Boolean(filters.minPrice || filters.maxPrice)
+  ].filter(Boolean).length;
+
+  const hasAnyFilterActive = Boolean(
+    filters.query.trim() ||
+    filters.categoryId ||
+    filters.brand ||
+    filters.vehicleId ||
+    filters.minPrice ||
+    filters.maxPrice ||
+    filters.stockStatus !== 'all'
+  );
+
+  const handleClearAllFilters = () => {
+    setFilters({
+      query: '',
+      categoryId: '',
+      vehicleId: '',
+      brand: '',
+      minPrice: '',
+      maxPrice: '',
+      stockStatus: 'all',
+      sortBy: 'name',
+      sortOrder: 'asc'
+    });
+  };
+
   // Calculate current range description
   const rangeStart = (page - 1) * pageSize + 1;
   const rangeEnd = Math.min(page * pageSize, allFilteredPartsRaw.length);
@@ -420,16 +451,19 @@ export const Inventory: React.FC<InventoryProps> = ({
           </div>
 
           {/* Quick Category drop */}
-          <div style={{ width: '160px' }}>
+          <div style={{ width: '200px' }}>
             <select
               className="form-select"
               value={filters.categoryId}
               onChange={e => setFilters(prev => ({ ...prev, categoryId: e.target.value }))}
             >
-              <option value="">All Categories</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
+              <option value="">All Categories ({allPartsRaw.length})</option>
+              {categories.map(c => {
+                const count = allPartsRaw.filter(p => p.categoryId === c.id).length;
+                return (
+                  <option key={c.id} value={c.id}>{c.name} ({count})</option>
+                );
+              })}
             </select>
           </div>
 
@@ -453,12 +487,82 @@ export const Inventory: React.FC<InventoryProps> = ({
             size="md" 
             icon={<SlidersHorizontal size={14} />} 
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className={showAdvancedFilters || filters.brand || filters.minPrice || filters.maxPrice || filters.vehicleId ? 'border-brand' : ''}
+            className={showAdvancedFilters || activeAdvancedFilterCount > 0 ? 'border-brand' : ''}
           >
-            Filters
+            Filters{activeAdvancedFilterCount > 0 ? ` (${activeAdvancedFilterCount})` : ''}
           </Button>
 
+          {hasAnyFilterActive && (
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={handleClearAllFilters}
+              style={{ color: 'var(--color-danger)', fontSize: '0.8rem', padding: '0 12px' }}
+            >
+              Reset Filters
+            </Button>
+          )}
+
         </div>
+
+        {/* Active Filter Badges */}
+        {hasAnyFilterActive && (
+          <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)' }}>Active Filters:</span>
+            {filters.query.trim() && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Search: "{filters.query}"
+                <button type="button" onClick={() => setFilters(p => ({ ...p, query: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            {filters.categoryId && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Category: {getCategoryName(filters.categoryId)}
+                <button type="button" onClick={() => setFilters(p => ({ ...p, categoryId: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            {filters.brand && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Brand: {filters.brand}
+                <button type="button" onClick={() => setFilters(p => ({ ...p, brand: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            {filters.vehicleId && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Bike: {vehicles.find(v => v.id === filters.vehicleId)?.model || 'Model'}
+                <button type="button" onClick={() => setFilters(p => ({ ...p, vehicleId: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            {(filters.minPrice || filters.maxPrice) && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Price: Rs. {filters.minPrice || '0'} - {filters.maxPrice || '∞'}
+                <button type="button" onClick={() => setFilters(p => ({ ...p, minPrice: '', maxPrice: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            {filters.stockStatus !== 'all' && (
+              <span className="badge badge-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', fontSize: '0.75rem' }}>
+                Stock: {filters.stockStatus === 'instock' ? 'In Stock' : filters.stockStatus === 'lowstock' ? 'Low Stock' : 'Out of Stock'}
+                <button type="button" onClick={() => setFilters(p => ({ ...p, stockStatus: 'all' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: 0, fontWeight: 700 }}>✕</button>
+              </span>
+            )}
+            <button 
+              type="button"
+              onClick={handleClearAllFilters} 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--color-danger)', 
+                fontSize: '0.75rem', 
+                fontWeight: 600, 
+                cursor: 'pointer', 
+                marginLeft: 'auto',
+                textDecoration: 'underline'
+              }}
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
 
         {/* Filter Drawer Section */}
         {showAdvancedFilters && (
@@ -533,6 +637,11 @@ export const Inventory: React.FC<InventoryProps> = ({
                   <option key={v.id} value={v.id}>{v.make} {v.model} ({v.year}) - {v.engineCC}</option>
                 ))}
               </select>
+              {hasAnyFilterActive && (
+                <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button variant="ghost" size="sm" onClick={handleClearAllFilters} style={{ color: 'var(--color-danger)' }}>Reset All Filters</Button>
+                </div>
+              )}
             </div>
 
           </div>
@@ -769,17 +878,17 @@ export const Inventory: React.FC<InventoryProps> = ({
             {/* Page Size selector */}
             <select
               className="form-select"
-              style={{ width: '80px', height: '32px', padding: '0 8px', fontSize: '0.8rem', marginLeft: '12px' }}
+              style={{ width: '95px', height: '32px', padding: '0 8px', fontSize: '0.8rem', marginLeft: '12px' }}
               value={pageSize}
               onChange={e => {
-                setPageSize(parseInt(e.target.value) || 25);
+                setPageSize(parseInt(e.target.value) || 50);
                 setPage(1);
               }}
             >
-              <option value="10">10 / pg</option>
               <option value="25">25 / pg</option>
               <option value="50">50 / pg</option>
               <option value="100">100 / pg</option>
+              <option value="500">All ({allFilteredPartsRaw.length})</option>
             </select>
           </div>
 

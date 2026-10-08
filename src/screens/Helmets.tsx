@@ -704,10 +704,12 @@ export const Helmets: React.FC = () => {
                 <HardHat size={32} />
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
-                No Helmets Found
+                {helmets.length === 0 ? 'No Helmets Catalogued Yet' : 'No Helmets Found'}
               </h3>
               <p style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem', maxWidth: '380px', margin: '0 auto 1.5rem' }}>
-                We couldn't find any helmet products matching your filter criteria. Try adjusting search or reset filters.
+                {helmets.length === 0 
+                  ? 'Your helmet inventory is clean and ready. Add your first helmet product or import via CSV to get started.' 
+                  : "We couldn't find any helmet products matching your filter criteria. Try adjusting search or reset filters."}
               </p>
               <button 
                 onClick={handleOpenCreateModal} 
@@ -892,7 +894,14 @@ export const Helmets: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="table-body">
-                  {helmets.map(h => {
+                  {helmets.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-tertiary)' }}>
+                        No helmet models recorded yet. Add helmets to view valuation and performance metrics.
+                      </td>
+                    </tr>
+                  ) : (
+                    helmets.map(h => {
                     const isOut = h.stockLevel === 0;
                     const isLow = h.stockLevel <= h.reorderPoint;
                     const val = h.stockLevel * h.salePrice;
@@ -920,7 +929,7 @@ export const Helmets: React.FC = () => {
                         </td>
                       </tr>
                     );
-                  })}
+                  }))}
                 </tbody>
               </table>
             </div>

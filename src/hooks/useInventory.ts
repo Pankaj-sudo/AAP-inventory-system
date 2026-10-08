@@ -22,7 +22,7 @@ export function useInventory() {
   
   // Pagination State
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(50);
 
   const [filters, setFilters] = useState<InventoryFilters>({
     query: '',
@@ -71,11 +71,11 @@ export function useInventory() {
     if (filters.query.trim()) {
       const q = filters.query.toLowerCase().trim();
       result = result.filter(
-        p => p.name.toLowerCase().includes(q) ||
-             p.sku.toLowerCase().includes(q) ||
-             p.oemNumber.toLowerCase().includes(q) ||
-             p.barcode.toLowerCase().includes(q) ||
-             p.description.toLowerCase().includes(q)
+        p => (p.name || '').toLowerCase().includes(q) ||
+             (p.sku || '').toLowerCase().includes(q) ||
+             (p.oemNumber || '').toLowerCase().includes(q) ||
+             (p.barcode || '').toLowerCase().includes(q) ||
+             (p.description || '').toLowerCase().includes(q)
       );
     }
 
@@ -86,12 +86,12 @@ export function useInventory() {
 
     // Brand Filter
     if (filters.brand) {
-      result = result.filter(p => p.brand.toLowerCase() === filters.brand.toLowerCase());
+      result = result.filter(p => (p.brand || '').toLowerCase() === filters.brand.toLowerCase());
     }
 
     // Vehicle Compatibility Filter
     if (filters.vehicleId) {
-      result = result.filter(p => p.compatibilityIds.includes(filters.vehicleId));
+      result = result.filter(p => (p.compatibilityIds || []).includes(filters.vehicleId));
     }
 
     // Price Bounds
@@ -112,8 +112,8 @@ export function useInventory() {
     if (filters.stockStatus !== 'all') {
       result = result.filter(p => {
         if (filters.stockStatus === 'outofstock') return p.stockLevel === 0;
-        if (filters.stockStatus === 'lowstock') return p.stockLevel > 0 && p.stockLevel <= p.reorderPoint;
-        return p.stockLevel > p.reorderPoint;
+        if (filters.stockStatus === 'lowstock') return p.stockLevel > 0 && p.stockLevel <= (p.reorderPoint || 3);
+        return p.stockLevel > (p.reorderPoint || 3);
       });
     }
 
@@ -135,16 +135,23 @@ export function useInventory() {
     return result;
   }, [parts, filters]);
 
+  // Total pages
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(allFilteredPartsRaw.length / pageSize));
+  }, [allFilteredPartsRaw, pageSize]);
+
+  // Clamp page if out of bounds
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(Math.max(1, totalPages));
+    }
+  }, [page, totalPages]);
+
   // 2. Paginate the filtered list
   const paginatedParts = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
     return allFilteredPartsRaw.slice(startIndex, startIndex + pageSize);
   }, [allFilteredPartsRaw, page, pageSize]);
-
-  // Total pages
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(allFilteredPartsRaw.length / pageSize));
-  }, [allFilteredPartsRaw, pageSize]);
 
   // Statistics
   const stats = useMemo(() => {
